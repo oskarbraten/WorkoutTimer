@@ -26,8 +26,8 @@ class OverviewActivity : Activity() {
 
         addWorkoutButton.setOnClickListener {
             val workoutItems = ArrayList<WorkoutItem>()
-            workoutItems.add(WorkoutItem("PushUps", 1000))
-            workoutItems.add(WorkoutItem("Pause", 1000))
+            workoutItems.add(WorkoutItem("PushUps", 10000))
+            workoutItems.add(WorkoutItem("Pause", 10000))
             workouts.add(Workout("Test", workoutItems))
             adapter.notifyDataSetChanged()
         }
