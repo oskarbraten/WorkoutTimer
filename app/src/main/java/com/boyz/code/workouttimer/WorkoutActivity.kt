@@ -22,8 +22,7 @@ class WorkoutActivity : Activity() {
 
         val rv = findViewById<RecyclerView>(R.id.recyclerViewWorkoutItem)
         rv.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
-
-//        workoutItems.add(WorkoutItem("Default", 600))
+        
         val title = intent.getStringExtra("title")
         workoutItems += WorkoutManager.getWorkout(this, title).items
 
