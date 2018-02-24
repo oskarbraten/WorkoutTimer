@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.boyz.code.workouttimer.R
-import com.boyz.code.workouttimer.WorkoutItemActivity
+import com.boyz.code.workouttimer.WorkoutActivity
 import kotlinx.android.synthetic.main.card_workout.view.*
 
 class WorkoutAdapter(val workoutList: ArrayList<Workout>): RecyclerView.Adapter<WorkoutAdapter.ViewHolder>() {
@@ -33,7 +33,7 @@ class WorkoutAdapter(val workoutList: ArrayList<Workout>): RecyclerView.Adapter<
 
         fun addListener() {
             itemView.setOnClickListener {
-                val intent = Intent(itemView.context, WorkoutItemActivity::class.java)
+                val intent = Intent(itemView.context, WorkoutActivity::class.java)
                 intent.putExtra("title", itemView.cardWorkoutTitle.text.toString())
                 itemView.context.startActivity(intent)
             }

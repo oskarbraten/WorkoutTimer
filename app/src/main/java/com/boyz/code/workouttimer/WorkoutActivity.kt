@@ -5,20 +5,19 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.widget.LinearLayout
 import com.boyz.code.workouttimer.misc.Workout
 import com.boyz.code.workouttimer.misc.WorkoutItem
 import com.boyz.code.workouttimer.misc.WorkoutItemAdapter
 import com.google.gson.Gson
 
-class WorkoutItemActivity : Activity() {
+class WorkoutActivity : Activity() {
 
     private val workoutItems = ArrayList<WorkoutItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_workout_item)
+        setContentView(R.layout.activity_workout)
 
         val rv = findViewById<RecyclerView>(R.id.recyclerViewWorkoutItem)
         rv.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
