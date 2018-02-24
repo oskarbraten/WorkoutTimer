@@ -1,18 +1,21 @@
 package com.boyz.code.workouttimer.misc
 
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.boyz.code.workouttimer.R
+import com.boyz.code.workouttimer.WorkoutItemActivity
 import kotlinx.android.synthetic.main.card_workout.view.*
 
-class CustomAdapter(val workoutList: ArrayList<Workout>): RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+class WorkoutAdapter(val workoutList: ArrayList<Workout>): RecyclerView.Adapter<WorkoutAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         holder?.cardWorkoutTitle?.text = workoutList[position].title
         holder?.cardWorkoutTime?.text = workoutList[position].length().convertLength()
 
+        holder?.addListener()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
@@ -27,6 +30,13 @@ class CustomAdapter(val workoutList: ArrayList<Workout>): RecyclerView.Adapter<C
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val cardWorkoutTitle = itemView.cardWorkoutTitle!!
         val cardWorkoutTime = itemView.cardWorkoutTime!!
+
+        fun addListener() {
+            itemView.setOnClickListener {
+                val intent = Intent(itemView.context, WorkoutItemActivity::class.java)
+                itemView.context.startActivity(intent)
+            }
+        }
     }
 
 }

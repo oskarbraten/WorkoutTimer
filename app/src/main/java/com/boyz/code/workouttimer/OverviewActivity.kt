@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.Toast
-import com.boyz.code.workouttimer.misc.CustomAdapter
+import com.boyz.code.workouttimer.misc.WorkoutAdapter
 import com.boyz.code.workouttimer.misc.Workout
 import com.boyz.code.workouttimer.misc.WorkoutItem
 import kotlinx.android.synthetic.main.activity_overview.*
@@ -26,7 +26,7 @@ class OverviewActivity : Activity() {
         val rv = findViewById<RecyclerView>(R.id.recyclerViewWorkout)
         rv.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
 
-        var adapter = CustomAdapter(workouts)
+        var adapter = WorkoutAdapter(workouts)
         rv.adapter = adapter
 
         addWorkoutButton.setOnClickListener {
