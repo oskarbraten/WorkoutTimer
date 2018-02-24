@@ -1,10 +1,9 @@
 package com.boyz.code.workouttimer.misc
 
-/**
- * Created by daniel on 24.02.18.
- */
+import android.content.Context
+import com.google.gson.Gson
 
-public fun Int?.convertLength(): String {
+fun Int?.convertLength(): String {
 
     val total = this!!
 
@@ -29,3 +28,29 @@ public fun Int?.convertLength(): String {
 
     return "$cHours:$cMinutes:$cSeconds"
 }
+
+object WorkoutManager {
+
+    fun getWorkouts(context: Context): List<Workout> {
+        return context.getSharedPreferences("data", Context.MODE_PRIVATE).all.map {(key, value) ->
+            val workout = Gson().fromJson("$value", Workout::class.java)
+            Workout(key, workout.items)
+        }
+    }
+
+    fun getWorkout(context: Context, title: String) : Workout {
+        val prefs = context.getSharedPreferences("data", Context.MODE_PRIVATE)
+        val gson = Gson()
+        val json = prefs.getString(title, "{message:'No json'}")
+        return gson.fromJson(json, Workout::class.java)
+    }
+
+    fun addWorkout(context: Context, workout: Workout) {
+        val prefs = context.getSharedPreferences("data", Context.MODE_PRIVATE)
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = gson.toJson(workout)
+        editor.putString(workout.title, json).apply()
+    }
+}
+

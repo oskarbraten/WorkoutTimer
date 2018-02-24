@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import com.boyz.code.workouttimer.misc.Workout
 import com.boyz.code.workouttimer.misc.WorkoutItem
 import com.boyz.code.workouttimer.misc.WorkoutItemAdapter
+import com.boyz.code.workouttimer.misc.WorkoutManager
 import com.google.gson.Gson
 
 class WorkoutActivity : Activity() {
@@ -23,23 +24,10 @@ class WorkoutActivity : Activity() {
         rv.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
 
 //        workoutItems.add(WorkoutItem("Default", 600))
-        getWorkoutInfo()
+        val title = intent.getStringExtra("title")
+        workoutItems += WorkoutManager.getWorkout(this, title).items
 
         var adapter = WorkoutItemAdapter(workoutItems)
         rv.adapter = adapter
-    }
-
-    fun getWorkoutInfo() {
-        val title = intent.getStringExtra("title")
-
-        val prefs = getSharedPreferences("data", Context.MODE_PRIVATE)
-        val gson = Gson()
-        val json = prefs.getString(title, "{message:'No json'}")
-        val workout = gson.fromJson(json, Workout::class.java)
-
-        workoutItems += workout.items
-//        for (workoutItem: WorkoutItem in workout.items) {
-//            workoutItems.add(workoutItem)
-//        }
     }
 }

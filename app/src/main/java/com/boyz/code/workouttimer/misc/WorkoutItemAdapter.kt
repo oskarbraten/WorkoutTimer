@@ -23,7 +23,7 @@ class WorkoutItemAdapter(val workoutItemList: ArrayList<WorkoutItem>): RecyclerV
         return workoutItemList.size
     }
 
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val cardWorkoutItemTitle = itemView.cardWorkoutItemTitle!!
         val cardWorkoutItemLength = itemView.cardWorkoutItemLength!!
     }
