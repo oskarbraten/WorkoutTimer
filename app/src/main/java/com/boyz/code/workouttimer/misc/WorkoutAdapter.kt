@@ -34,6 +34,7 @@ class WorkoutAdapter(val workoutList: ArrayList<Workout>): RecyclerView.Adapter<
         fun addListener() {
             itemView.setOnClickListener {
                 val intent = Intent(itemView.context, WorkoutItemActivity::class.java)
+                intent.putExtra("title", itemView.cardWorkoutTitle.text.toString())
                 itemView.context.startActivity(intent)
             }
         }
