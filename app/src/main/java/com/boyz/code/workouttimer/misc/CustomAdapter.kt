@@ -11,7 +11,7 @@ class CustomAdapter(val workoutList: ArrayList<Workout>): RecyclerView.Adapter<C
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         holder?.cardWorkoutTitle?.text = workoutList[position].title
-        holder?.cardWorkoutTime?.text = workoutList[position].convertLength()
+        holder?.cardWorkoutTime?.text = workoutList[position].length().convertLength()
 
     }
 
