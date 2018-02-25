@@ -1,6 +1,7 @@
 package com.boyz.code.workouttimer.misc
 
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,17 +13,22 @@ import kotlinx.android.synthetic.main.card_exercise.view.*
 class ExerciseAdapter(val exerciseList: ArrayList<Exercise>): RecyclerView.Adapter<ExerciseAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+        val exercise = exerciseList[position]
 
-        holder?.title?.text = exerciseList[position].title
+        Log.d("DEBUG  TESTING:", exercise.toString())
+
+        holder?.title?.text = exercise.title
         holder?.length?.visibility = TextView.VISIBLE
 
         holder?.itemView?.setOnClickListener(null)
 
-        if (exerciseList[position].length == 0L) {
+        if (exercise.length == 0L) {
             holder?.length?.text = "Tap to continue"
             holder?.length?.visibility = TextView.GONE
+        } else if (exercise.progress == 0L) {
+            holder?.length?.text = exercise.length.toTimerFormat()
         } else {
-            holder?.length?.text = exerciseList[position].length.toTimerFormat()
+            holder?.length?.text = (exercise.length - exercise.progress).toTimerFormat()
         }
     }
 

@@ -7,7 +7,7 @@ import com.google.gson.Gson
 
 fun Long?.toTimerFormat(): String {
 
-    val total = this!!
+    val total = this!! / 1000
 
     val hours = (total / (60*60) % 24)
     val minutes = (total / (60) % 60)

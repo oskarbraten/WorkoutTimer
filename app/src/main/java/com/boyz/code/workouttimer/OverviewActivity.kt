@@ -26,11 +26,11 @@ class OverviewActivity : Activity() {
 
         workouts += WorkoutManager.getWorkouts(this);
 
-        val rv = findViewById<RecyclerView>(R.id.recyclerViewWorkout)
-        rv.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewWorkout)
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
 
         var adapter = WorkoutAdapter(workouts)
-        rv.adapter = adapter
+        recyclerView.adapter = adapter
 
         addWorkoutButton.setOnClickListener {
             addWorkout()
@@ -50,23 +50,10 @@ class OverviewActivity : Activity() {
         alertDialogBuilder.setCancelable(false)
         alertDialogBuilder.setPositiveButton("OK", { dialogInterface: DialogInterface, i: Int ->
             val workoutItems = ArrayList<Exercise>()
-            workoutItems.add(Exercise("Plank", 5))
-            workoutItems.add(Exercise("Reverse plank", 5))
+            workoutItems.add(Exercise("Plank", 5000))
+            workoutItems.add(Exercise("Reverse plank", 5000))
             workoutItems.add(Exercise("Push-ups", 0))
-            workoutItems.add(Exercise("Planche", 5))
-            workoutItems.add(Exercise("Push-downs", 0))
-            workoutItems.add(Exercise("Plank", 5))
-            workoutItems.add(Exercise("Reverse plank", 5))
-            workoutItems.add(Exercise("Push-ups", 0))
-            workoutItems.add(Exercise("Planche", 5))
-            workoutItems.add(Exercise("Push-downs", 0))
-            workoutItems.add(Exercise("Plank", 5))
-            workoutItems.add(Exercise("Reverse plank", 5))
-            workoutItems.add(Exercise("Push-ups", 0))
-            workoutItems.add(Exercise("Planche", 5))
-            workoutItems.add(Exercise("Push-downs", 0))
 
-            workoutItems.add(Exercise("Pause", 5))
             val workout = Workout(workoutTitleInput.text.toString(), workoutItems)
             workouts.add(workout)
             WorkoutManager.addWorkout(this, workout)
