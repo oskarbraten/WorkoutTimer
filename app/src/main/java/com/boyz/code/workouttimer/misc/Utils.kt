@@ -4,6 +4,9 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import com.boyz.code.workouttimer.data.Workout
 import com.google.gson.Gson
+import android.widget.Toast
+
+
 
 fun Long?.toTimerFormat(): String {
 
@@ -77,6 +80,26 @@ object WorkoutManager {
         return context.getSharedPreferences("data", Context.MODE_PRIVATE).all.map {(key, value) ->
             val workout = Gson().fromJson("$value", Workout::class.java)
             Workout(key, workout.items)
+        }
+    }
+
+
+
+    fun doesWorkoutExist(context: Context, title: String) : Boolean {
+        var exists = false
+
+        getWorkoutTitles(context).forEach {
+            if (it.equals(title)) {
+                exists = true
+            }
+        }
+
+        return exists
+    }
+
+    fun getWorkoutTitles(context: Context): List<String> {
+        return context.getSharedPreferences("data", Context.MODE_PRIVATE).all.map {(key, value) ->
+            key
         }
     }
 

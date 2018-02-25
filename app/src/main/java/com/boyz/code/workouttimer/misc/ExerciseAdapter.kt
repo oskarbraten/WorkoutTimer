@@ -42,7 +42,7 @@ class ExerciseAdapter(private val exercises: ArrayList<Exercise>) : RecyclerView
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val title = itemView.exerciseCardTitle!!
+        val title = itemView.exerciseCardTitle!! //itemView.findViewById(R.id.exerciseCardTitle)
         val status = itemView.exerciseCardStatus!!
     }
 
