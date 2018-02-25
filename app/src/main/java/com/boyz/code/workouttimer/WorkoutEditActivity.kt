@@ -30,14 +30,14 @@ class WorkoutEditActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_workout_edit)
 
-        val exerciseTitle = intent.getStringExtra("title")
+        val workoutTitle = intent.getStringExtra("title")
 
-        title = "Workout: " + exerciseTitle
+        title = "Workout: " + workoutTitle
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewWorkoutEdit)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
 
-        exercises += WorkoutManager.getWorkout(this, exerciseTitle).items
+        exercises += WorkoutManager.getWorkout(this, workoutTitle).items
 
         recyclerView.adapter = ExerciseEditAdapter(exercises)
 
@@ -50,7 +50,7 @@ class WorkoutEditActivity : Activity() {
 
             alertDialogBuilder.setCancelable(false)
             alertDialogBuilder.setPositiveButton("OK", { dialogInterface: DialogInterface, i: Int ->
-                WorkoutManager.deleteWorkout(this, exerciseTitle)
+                WorkoutManager.deleteWorkout(this, workoutTitle)
                 finish()
                 startActivity(Intent(this, OverviewActivity::class.java))
                 Toast.makeText(this, "Workout deleted!", Toast.LENGTH_LONG).show()
@@ -96,6 +96,56 @@ class WorkoutEditActivity : Activity() {
                 }
             }
 
+
+
+            val exerciseTitleInput = promptsView.exerciseTitleInput
+            val minutesInput = promptsView.minutesInput
+            val secondsInput = promptsView.secondsInput
+
+            alertDialogBuilder.setCancelable(false)
+            alertDialogBuilder.setPositiveButton("OK", { dialogInterface: DialogInterface, i: Int ->
+                if (exerciseTitleInput.equals("")) {
+                    Toast.makeText(this, "jaja, sånn kan det gå", Toast.LENGTH_LONG).show()
+                } else {
+                    val exercise = Exercise(exerciseTitleInput.text.toString(), timeInputConverter(minutesInput.text.toString().toInt(), secondsInput.text.toString().toInt()))
+
+                    exercises.add(exercise)
+                    val newWorkout = Workout(workoutTitle, exercises)
+
+                    WorkoutManager.overwriteWorkout(this, newWorkout)
+                }
+            })
+
+            alertDialogBuilder.setNegativeButton("Cancel", { dialogInterface: DialogInterface, i: Int ->
+                Toast.makeText(this, "jaja, sånn kan det gå", Toast.LENGTH_LONG).show()
+            })
+
+            val alertDialog = alertDialogBuilder.create()
+
+            alertDialog.show()
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = false
+
+            fun isInputsValid(): Boolean =
+                    (!promptsView.exerciseTitleInput.text.toString().equals(""))
+                    && ((!minutesInput.text.toString().equals(""))
+                    && (!minutesInput.text.toString().equals("00"))
+                    && ((!minutesInput.text.toString().equals("0"))))
+                    || ((!secondsInput.text.toString().equals(""))
+                    && (!secondsInput.text.toString().equals("00"))
+                    && ((!secondsInput.text.toString().equals("0"))))
+
+            promptsView.exerciseTitleInput.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(p0: Editable?) {
+                }
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = isInputsValid()
+                }
+            })
+
             promptsView.minutesInput.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {
 
@@ -109,6 +159,12 @@ class WorkoutEditActivity : Activity() {
                     if (p0?.length!! > 1) {
                         promptsView.secondsInput.requestFocus()
                     }
+
+                    if (p0.toString().isNullOrEmpty()) {
+                        promptsView.minutesInput.setText("00")
+                    }
+
+                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = isInputsValid()
                 }
             })
 
@@ -122,25 +178,17 @@ class WorkoutEditActivity : Activity() {
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     if (p0.toString().isNullOrEmpty()) {
                         promptsView.minutesInput.requestFocus()
+                        promptsView.secondsInput.setText("00")
                     }
+
+                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = isInputsValid()
                 }
             })
-
-            alertDialogBuilder.setCancelable(false)
-            alertDialogBuilder.setPositiveButton("OK", { dialogInterface: DialogInterface, i: Int ->
-                WorkoutManager.deleteWorkout(this, exerciseTitle)
-                finish()
-                startActivity(Intent(this, OverviewActivity::class.java))
-                Toast.makeText(this, "Workout deleted!", Toast.LENGTH_LONG).show()
-            })
-
-            alertDialogBuilder.setNegativeButton("Cancel", { dialogInterface: DialogInterface, i: Int ->
-                Toast.makeText(this, "jaja, sånn kan det gå", Toast.LENGTH_LONG).show()
-            })
-
-            val alertDialog = alertDialogBuilder.create()
-
-            alertDialog.show()
         }
     }
+
+    //Legg til i utils
+    fun timeInputConverter(min: Int, sec: Int): Long = ((min * 60000) + (sec * 1000)).toLong()
+
+//    fun isInputsValid(): Boolean = (!exerciseTitleInput.text.toString().equals("")) && (!minutesInput.text.toString().equals("00")) && ((!minutesInput.text.toString().equals("0"))) && (!secondsInput.text.toString().equals("00")) && ((!secondsInput.text.toString().equals("0")))
 }
