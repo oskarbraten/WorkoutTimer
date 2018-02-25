@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.boyz.code.workouttimer.R
 import com.boyz.code.workouttimer.WorkoutActivity
+import com.boyz.code.workouttimer.data.Workout
 import kotlinx.android.synthetic.main.card_workout.view.*
 
 class WorkoutAdapter(val workoutList: ArrayList<Workout>): RecyclerView.Adapter<WorkoutAdapter.ViewHolder>() {

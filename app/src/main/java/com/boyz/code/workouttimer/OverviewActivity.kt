@@ -10,8 +10,8 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.boyz.code.workouttimer.misc.WorkoutAdapter
-import com.boyz.code.workouttimer.misc.Workout
-import com.boyz.code.workouttimer.misc.Exercise
+import com.boyz.code.workouttimer.data.Workout
+import com.boyz.code.workouttimer.data.Exercise
 import com.boyz.code.workouttimer.misc.WorkoutManager
 import kotlinx.android.synthetic.main.activity_overview.*
 import kotlinx.android.synthetic.main.add_workout_dialog.view.*

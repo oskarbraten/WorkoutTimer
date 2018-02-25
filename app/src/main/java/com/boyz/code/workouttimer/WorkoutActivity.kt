@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.activity_workout.*
 import android.os.CountDownTimer
 import android.widget.TextView
 import android.widget.Toast
+import com.boyz.code.workouttimer.data.Exercise
 import com.boyz.code.workouttimer.misc.*
 import kotlinx.android.synthetic.main.card_exercise.view.*
 
