@@ -80,7 +80,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:ems="10"
-                android:hint="00"
                 android:inputType="number"
                 android:maxLength="2"
                 android:selectAllOnFocus="true"

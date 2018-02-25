@@ -118,6 +118,10 @@ object WorkoutManager {
         editor.putString(workout.title, json).apply()
     }
 
+    fun overwriteWorkout(context: Context, workout: Workout) {
+        addWorkout(context, workout)
+    }
+
     fun deleteWorkout(context: Context, title: String) {
         val prefs = context.getSharedPreferences("data", Context.MODE_PRIVATE)
         prefs.edit().putString(title, null).apply()
