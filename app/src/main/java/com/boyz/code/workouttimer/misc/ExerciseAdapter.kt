@@ -9,24 +9,26 @@ import com.boyz.code.workouttimer.R
 import com.boyz.code.workouttimer.data.Exercise
 import kotlinx.android.synthetic.main.card_exercise.view.*
 
-class ExerciseAdapter(val exercises: ArrayList<Exercise>): RecyclerView.Adapter<ExerciseAdapter.ViewHolder>() {
+class ExerciseAdapter(private val exercises: ArrayList<Exercise>) : RecyclerView.Adapter<ExerciseAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         val exercise = exercises[position]
 
         holder?.title?.text = exercise.title
 
-        // reset
+        // reset visibility
         holder?.status?.visibility = TextView.VISIBLE
-        holder?.itemView?.setOnClickListener(null)
 
-        if (exercise.length == 0L) {
-            // hide status on exercises that are not timed.
-            holder?.status?.visibility = TextView.GONE
-        } else if (exercise.progress == 0L) {
-            holder?.status?.text = exercise.length.toTimerFormat()
-        } else {
-            holder?.status?.text = (exercise.length - exercise.progress).toTimerFormat()
+        when {
+            exercise.length == 0L -> {// hide status on exercises that are not timed.
+                holder?.status?.visibility = TextView.GONE
+            }
+            exercise.progress == 0L -> {
+                holder?.status?.text = exercise.length.toTimerFormat()
+            }
+            else -> {
+                holder?.status?.text = (exercise.length - exercise.progress).toTimerFormat()
+            }
         }
     }
 

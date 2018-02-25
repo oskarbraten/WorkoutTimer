@@ -28,15 +28,47 @@ fun Long?.toTimerFormat(): String {
         else -> seconds.toString()
     }
 
-    return "$cHours:$cMinutes:$cSeconds"
+    return when (hours) {
+        0L -> "$cMinutes:$cSeconds"
+        else -> "$cHours:$cMinutes:$cSeconds"
+    }
+}
+
+fun Long?.toTimerLongFormat(): String {
+
+    val total = this!! / 1000
+
+    val hours = (total / (60*60) % 24)
+    val minutes = (total / (60) % 60)
+    val seconds = (total % 60)
+
+    val cHours = when (hours) {
+        in 0..9 -> "0" + hours.toString()
+        else -> hours.toString()
+    }
+
+    val cMinutes = when (minutes) {
+        in 0..9 -> "0" + minutes.toString()
+        else -> minutes.toString()
+    }
+
+    val cSeconds = when (seconds) {
+        in 0..9 -> "0" + seconds.toString()
+        else -> seconds.toString()
+    }
+
+    return when (hours) {
+        0L -> "$cMinutes:$cSeconds"
+        else -> "$cHours:$cMinutes:$cSeconds"
+    }
 }
 
 fun RecyclerView.disableScrolling() {
-    this.addOnItemTouchListener(RecyclerViewDisabler())
+    this.addOnItemTouchListener(RecyclerViewDisableListener())
 }
 
 fun RecyclerView.enableScrolling() {
-    this.removeOnItemTouchListener(RecyclerViewDisabler())
+    this.removeOnItemTouchListener(RecyclerViewDisableListener())
 }
 
 object WorkoutManager {

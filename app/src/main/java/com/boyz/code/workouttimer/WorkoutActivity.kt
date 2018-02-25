@@ -10,7 +10,6 @@ import android.view.MenuItem
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.activity_workout.*
 import android.os.CountDownTimer
-import android.util.Log
 import android.widget.Toast
 import com.boyz.code.workouttimer.data.Exercise
 import com.boyz.code.workouttimer.misc.*
@@ -19,6 +18,7 @@ import com.boyz.code.workouttimer.misc.*
 class WorkoutActivity : Activity() {
 
     private val exercises = ArrayList<Exercise>()
+
     private var currentTimer: CountDownTimer? = null
     private var currentPosition: Int = 0
 
@@ -29,7 +29,7 @@ class WorkoutActivity : Activity() {
         val title = intent.getStringExtra("title")
         setTitle("Workout: " + title)
 
-        exercises += WorkoutManager.getWorkout(this, title).items
+        exercises.addAll(WorkoutManager.getWorkout(this, title).items)
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewExercise)
 

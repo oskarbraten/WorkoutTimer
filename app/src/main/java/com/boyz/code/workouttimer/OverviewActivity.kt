@@ -24,7 +24,7 @@ class OverviewActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_overview)
 
-        workouts += WorkoutManager.getWorkouts(this);
+        workouts.addAll(WorkoutManager.getWorkouts(this))
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewWorkout)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)

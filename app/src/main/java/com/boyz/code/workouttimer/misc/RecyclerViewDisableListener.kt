@@ -4,7 +4,7 @@ import android.view.MotionEvent
 import android.support.v7.widget.RecyclerView
 
 
-class RecyclerViewDisabler : RecyclerView.OnItemTouchListener {
+class RecyclerViewDisableListener : RecyclerView.OnItemTouchListener {
 
     override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
         return true
