@@ -72,14 +72,6 @@ class WorkoutEditActivity : Activity() {
 
             alertDialogBuilder.setView(promptsView)
 
-            promptsView.includeTimerSwitcher.setOnCheckedChangeListener { compoundButton, isChecked ->
-                if (isChecked) {
-                    promptsView.durationWrapper.visibility = LinearLayout.VISIBLE
-                } else {
-                    promptsView.durationWrapper.visibility = LinearLayout.GONE
-                }
-            }
-
             promptsView.minutesInput.setOnFocusChangeListener { view, b ->
                 if (!b && !promptsView.minutesInput.text.isNullOrEmpty()) {
                     when (promptsView.minutesInput.text.toString().toInt()) {
@@ -125,14 +117,29 @@ class WorkoutEditActivity : Activity() {
             alertDialog.show()
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = false
 
-            fun isInputsValid(): Boolean =
-                    (!promptsView.exerciseTitleInput.text.toString().equals(""))
-                    && ((!minutesInput.text.toString().equals(""))
-                    && (!minutesInput.text.toString().equals("00"))
-                    && ((!minutesInput.text.toString().equals("0"))))
-                    || ((!secondsInput.text.toString().equals(""))
-                    && (!secondsInput.text.toString().equals("00"))
-                    && ((!secondsInput.text.toString().equals("0"))))
+            fun isInputsValid(): Boolean {
+                if (promptsView.includeTimerSwitcher.isChecked) {
+                    return (!promptsView.exerciseTitleInput.text.toString().equals(""))
+                            && (((!minutesInput.text.toString().equals(""))
+                            && (!minutesInput.text.toString().equals("00"))
+                            && ((!minutesInput.text.toString().equals("0"))))
+                            || ((!secondsInput.text.toString().equals(""))
+                            && (!secondsInput.text.toString().equals("00"))
+                            && ((!secondsInput.text.toString().equals("0")))))
+                } else {
+                    return (!promptsView.exerciseTitleInput.text.toString().equals(""))
+                }
+            }
+
+            promptsView.includeTimerSwitcher.setOnCheckedChangeListener { compoundButton, isChecked ->
+                if (isChecked) {
+                    promptsView.durationWrapper.visibility = LinearLayout.VISIBLE
+                } else {
+                    promptsView.durationWrapper.visibility = LinearLayout.GONE
+                }
+
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = isInputsValid()
+            }
 
             promptsView.exerciseTitleInput.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {
