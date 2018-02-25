@@ -8,7 +8,7 @@
     tools:layout_editor_absoluteY="81dp">
 
     <LinearLayout
-        android:id="@+id/progressBar"
+        android:id="@+id/workoutProgress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/cardview_dark_background"
@@ -16,12 +16,13 @@
         android:padding="24dp"
         android:paddingEnd="8dp"
         android:paddingStart="8dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/progressBarTitle"
+            android:id="@+id/workoutProgressTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Title"
@@ -29,7 +30,7 @@
             android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
         <TextView
-            android:id="@+id/progressBarStatus"
+            android:id="@+id/workoutProgressStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Status"
@@ -46,40 +47,25 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/workoutProgress">
 
-        <Button
-            android:id="@+id/resetBtn"
-            android:layout_width="88dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Reset"
-            tools:layout_editor_absoluteX="40dp"
-            tools:layout_editor_absoluteY="283dp" />
+    </android.support.v7.widget.RecyclerView>
 
-        <Button
-            android:id="@+id/startBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Start"
-            tools:layout_editor_absoluteX="222dp"
-            tools:layout_editor_absoluteY="314dp" />
-    </LinearLayout>
+    <Button
+        android:id="@+id/actionBtn"
+        android:layout_width="@dimen/fab_size_normal"
+        android:layout_height="@dimen/fab_size_normal"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/circle"
+        android:elevation="6dp"
+        android:foreground="@drawable/ic_play_arrow"
+        android:foregroundGravity="center"
+        android:stateListAnimator="@drawable/floating_action_button_animator"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

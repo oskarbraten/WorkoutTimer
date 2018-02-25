@@ -10,15 +10,16 @@ import android.view.MenuItem
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.activity_workout.*
 import android.os.CountDownTimer
+import android.view.View
 import android.widget.Toast
-import com.boyz.code.workouttimer.data.Exercise
+import com.boyz.code.workouttimer.data.Workout
 import com.boyz.code.workouttimer.misc.*
 
 
 class WorkoutActivity : Activity() {
 
-    private val exercises = ArrayList<Exercise>()
-
+    private lateinit var workout: Workout
+    private lateinit var recyclerView: RecyclerView
     private var currentTimer: CountDownTimer? = null
     private var currentPosition: Int = 0
 
@@ -29,72 +30,56 @@ class WorkoutActivity : Activity() {
         val title = intent.getStringExtra("title")
         setTitle("Workout: " + title)
 
-        exercises.addAll(WorkoutManager.getWorkout(this, title).items)
+        workout = WorkoutManager.getWorkout(this, title)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewExercise)
+        recyclerView = findViewById(R.id.recyclerViewExercise)
 
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         recyclerView.itemAnimator = NoAnimationItemAnimator()
-        recyclerView.adapter = ExerciseAdapter(exercises)
+        recyclerView.adapter = ExerciseAdapter(workout.items)
 
-        startBtn.setOnClickListener {
-            startBtn.isEnabled = false
+        actionBtn.setOnClickListener {
+            workoutProgress.visibility = LinearLayout.VISIBLE
 
             recyclerView.smoothScrollToPosition(0)
-
-            scheduler(recyclerView, position = 0)
-        }
-
-        resetBtn.setOnClickListener {
-            currentTimer?.cancel()
-
-            reset();
-
-            recyclerView.adapter.notifyDataSetChanged()
-
-            startBtn.isEnabled = true
-
-            currentPosition = 0
+            scheduler(position = 0)
         }
     }
 
+    private fun scheduler(position: Int) {
 
-    private fun reset() {
-        // Loop over all exercises and reset progress.
-        exercises.forEach {
-            it.progress = 0
-        }
-    }
-
-    private fun scheduler(recyclerView: RecyclerView, position: Int) {
-
-        if (position >= exercises.size) {
+        if (position >= workout.items.size) {
             Toast.makeText(this, "Workout complete!", Toast.LENGTH_SHORT).show()
 
-            reset()
+            workout.reset()
+            workoutProgress.visibility = LinearLayout.GONE
 
             recyclerView.adapter.notifyDataSetChanged()
 
         } else {
-            val item = exercises[position]
+            val item = workout.items[position]
+
+            workoutProgressTitle.text = item.title
 
             if (item.length == 0L) {
 
-                progressBar.setOnClickListener {
+                workoutProgressStatus.text = "Tap to continue"
+
+                workoutProgress.setOnClickListener {
 
                     // clear click listener.
                     it.setOnClickListener(null)
-                    scheduler(recyclerView, position + 1)
+                    scheduler(position + 1)
                 }
-
             } else {
+                workoutProgressStatus.text = (item.length - item.progress).toTimerFormat()
 
-                val oldProgress = item.progress
-
-                currentTimer = object : CountDownTimer((item.length - oldProgress), 250) {
+                currentTimer = object : CountDownTimer((item.length - item.progress), 250) {
 
                     override fun onTick(millisUntilFinished: Long) {
                         item.progress += 250
+
+                        workoutProgressStatus.text = (item.length - item.progress).toTimerFormat()
 
                         recyclerView.adapter.notifyItemChanged(position)
 
@@ -104,7 +89,7 @@ class WorkoutActivity : Activity() {
                     override fun onFinish() {
 
                         // execute next timer/exercise.
-                        scheduler(recyclerView, position + 1)
+                        scheduler(position + 1)
                     }
                 }.start()
             }
@@ -120,7 +105,7 @@ class WorkoutActivity : Activity() {
         return when (item!!.itemId) {
             R.id.workoutMenuOptions -> {
                 val intent = Intent(this, WorkoutEditActivity::class.java)
-                intent.putExtra("title", this.intent.getStringExtra("title"))
+                intent.putExtra("title", workout.title)
                 startActivity(intent)
                 true
             }
