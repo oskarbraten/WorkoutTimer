@@ -62,5 +62,10 @@ object WorkoutManager {
         val json = gson.toJson(workout)
         editor.putString(workout.title, json).apply()
     }
+
+    fun deleteWorkout(context: Context, title: String) {
+        val prefs = context.getSharedPreferences("data", Context.MODE_PRIVATE)
+        prefs.edit().putString(title, null).apply()
+    }
 }
 
