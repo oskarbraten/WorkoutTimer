@@ -13,12 +13,12 @@ import android.os.CountDownTimer
 import android.widget.TextView
 import android.widget.Toast
 import com.boyz.code.workouttimer.misc.*
-import kotlinx.android.synthetic.main.card_workout_item.view.*
+import kotlinx.android.synthetic.main.card_exercise.view.*
 
 
 class WorkoutActivity : Activity() {
 
-    private val workoutItems = ArrayList<WorkoutItem>()
+    private val exercises = ArrayList<Exercise>()
     private var currentTimer: CountDownTimer? = null
     private var currentProgress: Pair<Int, Long> = Pair(0, 0)
 
@@ -26,16 +26,16 @@ class WorkoutActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_workout)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewWorkoutItem)
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewExercise)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         
         val title = intent.getStringExtra("title")
 
         setTitle("Workout: " + title)
 
-        workoutItems += WorkoutManager.getWorkout(this, title).items
+        exercises += WorkoutManager.getWorkout(this, title).items
 
-        recyclerView.adapter = WorkoutItemAdapter(workoutItems)
+        recyclerView.adapter = ExerciseAdapter(exercises)
 
         startBtn.setOnClickListener { view ->
             startBtn.isEnabled = false
@@ -83,15 +83,15 @@ class WorkoutActivity : Activity() {
 
     fun scheduler(recyclerView: RecyclerView, position: Int, progressMillis: Long? = null) {
 
-        if (position >= workoutItems.size) {
+        if (position >= exercises.size) {
             Toast.makeText(this, "Workout complete!", Toast.LENGTH_SHORT).show()
             startBtn.isEnabled = true
             recyclerView.adapter.notifyDataSetChanged()
 
         } else {
-            val item = workoutItems.get(position)
+            val item = exercises.get(position)
             val itemView = recyclerView.layoutManager.findViewByPosition(position)
-            val itemViewLength = itemView.cardWorkoutItemLength
+            val itemViewLength = itemView.exerciseCardLength
 
             itemView.requestFocus() // scroll to item if not in view.
 
@@ -99,7 +99,7 @@ class WorkoutActivity : Activity() {
 
                 pauseBtn.isEnabled = false
 
-                itemView.cardWorkoutItemLength.visibility = TextView.VISIBLE
+                itemView.exerciseCardLength.visibility = TextView.VISIBLE
 
                 itemView.setOnClickListener {
                     itemViewLength.visibility = TextView.GONE

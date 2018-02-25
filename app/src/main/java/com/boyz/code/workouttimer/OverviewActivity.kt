@@ -11,7 +11,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import com.boyz.code.workouttimer.misc.WorkoutAdapter
 import com.boyz.code.workouttimer.misc.Workout
-import com.boyz.code.workouttimer.misc.WorkoutItem
+import com.boyz.code.workouttimer.misc.Exercise
 import com.boyz.code.workouttimer.misc.WorkoutManager
 import kotlinx.android.synthetic.main.activity_overview.*
 import kotlinx.android.synthetic.main.add_workout_dialog.view.*
@@ -49,24 +49,24 @@ class OverviewActivity : Activity() {
 
         alertDialogBuilder.setCancelable(false)
         alertDialogBuilder.setPositiveButton("OK", { dialogInterface: DialogInterface, i: Int ->
-            val workoutItems = ArrayList<WorkoutItem>()
-            workoutItems.add(WorkoutItem("Plank", 5))
-            workoutItems.add(WorkoutItem("Reverse plank", 5))
-            workoutItems.add(WorkoutItem("Push-ups", 0))
-            workoutItems.add(WorkoutItem("Planche", 5))
-            workoutItems.add(WorkoutItem("Push-downs", 0))
-            workoutItems.add(WorkoutItem("Plank", 5))
-            workoutItems.add(WorkoutItem("Reverse plank", 5))
-            workoutItems.add(WorkoutItem("Push-ups", 0))
-            workoutItems.add(WorkoutItem("Planche", 5))
-            workoutItems.add(WorkoutItem("Push-downs", 0))
-            workoutItems.add(WorkoutItem("Plank", 5))
-            workoutItems.add(WorkoutItem("Reverse plank", 5))
-            workoutItems.add(WorkoutItem("Push-ups", 0))
-            workoutItems.add(WorkoutItem("Planche", 5))
-            workoutItems.add(WorkoutItem("Push-downs", 0))
+            val workoutItems = ArrayList<Exercise>()
+            workoutItems.add(Exercise("Plank", 5))
+            workoutItems.add(Exercise("Reverse plank", 5))
+            workoutItems.add(Exercise("Push-ups", 0))
+            workoutItems.add(Exercise("Planche", 5))
+            workoutItems.add(Exercise("Push-downs", 0))
+            workoutItems.add(Exercise("Plank", 5))
+            workoutItems.add(Exercise("Reverse plank", 5))
+            workoutItems.add(Exercise("Push-ups", 0))
+            workoutItems.add(Exercise("Planche", 5))
+            workoutItems.add(Exercise("Push-downs", 0))
+            workoutItems.add(Exercise("Plank", 5))
+            workoutItems.add(Exercise("Reverse plank", 5))
+            workoutItems.add(Exercise("Push-ups", 0))
+            workoutItems.add(Exercise("Planche", 5))
+            workoutItems.add(Exercise("Push-downs", 0))
 
-            workoutItems.add(WorkoutItem("Pause", 5))
+            workoutItems.add(Exercise("Pause", 5))
             val workout = Workout(workoutTitleInput.text.toString(), workoutItems)
             workouts.add(workout)
             WorkoutManager.addWorkout(this, workout)
