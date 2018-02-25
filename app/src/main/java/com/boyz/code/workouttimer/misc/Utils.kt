@@ -4,7 +4,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import com.google.gson.Gson
 
-fun Int?.convertLength(): String {
+fun Long?.toTimerFormat(): String {
 
     val total = this!!
 

@@ -13,7 +13,7 @@ class WorkoutAdapter(val workoutList: ArrayList<Workout>): RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         holder?.cardWorkoutTitle?.text = workoutList[position].title
-        holder?.cardWorkoutTime?.text = workoutList[position].length().convertLength()
+        holder?.cardWorkoutTime?.text = workoutList[position].length().toTimerFormat()
 
         holder?.addListener()
     }

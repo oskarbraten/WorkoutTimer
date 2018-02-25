@@ -18,11 +18,11 @@ class WorkoutItemAdapter(val workoutItemList: ArrayList<WorkoutItem>): RecyclerV
 
         holder?.itemView?.setOnClickListener(null)
 
-        if (workoutItemList[position].length == 0) {
+        if (workoutItemList[position].length == 0L) {
             holder?.cardWorkoutItemLength?.text = "Tap to continue"
             holder?.cardWorkoutItemLength?.visibility = TextView.GONE
         } else {
-            holder?.cardWorkoutItemLength?.text = workoutItemList[position].length.convertLength()
+            holder?.cardWorkoutItemLength?.text = workoutItemList[position].length.toTimerFormat()
         }
     }
 

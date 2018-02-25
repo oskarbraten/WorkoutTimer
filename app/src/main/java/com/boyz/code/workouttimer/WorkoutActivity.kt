@@ -41,10 +41,15 @@ class WorkoutActivity : Activity() {
             startBtn.isEnabled = false
             pauseBtn.isEnabled = true
 
-            recyclerView.smoothScrollToPosition(0)
-            recyclerView.disableScrolling()
-
-            scheduler(recyclerView, position = 0)
+//            recyclerView.smoothScrollToPosition(0)
+//            recyclerView.disableScrolling()
+//
+//            recyclerView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+//                if (scrollY == 0) {
+//                    // finally reached the top.
+                    scheduler(recyclerView, position = 0)
+                //}
+            //}
         }
 
         resetBtn.setOnClickListener {
@@ -90,7 +95,7 @@ class WorkoutActivity : Activity() {
 
             itemView.requestFocus() // scroll to item if not in view.
 
-            if (item.length == 0) {
+            if (item.length == 0L) {
 
                 pauseBtn.isEnabled = false
 
@@ -109,17 +114,17 @@ class WorkoutActivity : Activity() {
                 var progressMillis2 = progressMillis
 
                 if (progressMillis2 == null) {
-                    progressMillis2 = item.length.toLong() * 1000
+                    progressMillis2 = item.length * 1000
                 }
                 currentTimer = object : CountDownTimer(progressMillis2, 50) {
 
                     override fun onTick(millisUntilFinished: Long) {
-                        itemViewLength.text = (Math.ceil(millisUntilFinished.toDouble() / 1000)).toInt().convertLength()
+                        itemViewLength.text = (Math.ceil(millisUntilFinished.toDouble() / 1000)).toLong().toTimerFormat()
                         currentProgress = Pair(position, millisUntilFinished)
                     }
 
                     override fun onFinish() {
-                        itemViewLength.text = (0).toInt().convertLength()
+                        itemViewLength.text = (0L).toTimerFormat()
 
                         scheduler(recyclerView, position + 1)
                     }
@@ -136,7 +141,9 @@ class WorkoutActivity : Activity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item!!.itemId) {
             R.id.workoutMenuOptions -> {
-                startActivity(Intent(this, WorkoutEditActivity::class.java))
+                val intent = Intent(this, WorkoutEditActivity::class.java)
+                intent.putExtra("title", this.intent.getStringExtra("title"))
+                startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
