@@ -20,10 +20,10 @@
             android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
         <TextView
-            android:id="@+id/exerciseCardLength"
+            android:id="@+id/exerciseCardStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Length"
+            android:text="Status"
             android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.Material.Large" />
 

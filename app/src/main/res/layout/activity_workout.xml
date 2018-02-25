@@ -4,7 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.boyz.code.workouttimer.WorkoutActivity">
+    tools:context="com.boyz.code.workouttimer.WorkoutActivity"
+    tools:layout_editor_absoluteY="81dp">
+
+    <LinearLayout
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_dark_background"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/progressBarTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textAlignment="center"
+            android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+
+        <TextView
+            android:id="@+id/progressBarStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Status"
+            android:textAlignment="center"
+            android:textAppearance="@android:style/TextAppearance.Material.Large" />
+
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewExercise"
@@ -14,41 +46,40 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
-    <Button
-        android:id="@+id/startBtn"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Start"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/pauseBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:enabled="false"
-        android:text="Pause"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/startBtn" />
-
-    <Button
-        android:id="@+id/resetBtn"
-        android:layout_width="88dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:text="Reset"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/pauseBtn"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/resetBtn"
+            android:layout_width="88dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Reset"
+            tools:layout_editor_absoluteX="40dp"
+            tools:layout_editor_absoluteY="283dp" />
+
+        <Button
+            android:id="@+id/startBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Start"
+            tools:layout_editor_absoluteX="222dp"
+            tools:layout_editor_absoluteY="314dp" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

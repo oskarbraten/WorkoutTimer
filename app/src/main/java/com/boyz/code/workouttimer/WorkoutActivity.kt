@@ -11,11 +11,9 @@ import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.activity_workout.*
 import android.os.CountDownTimer
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
 import com.boyz.code.workouttimer.data.Exercise
 import com.boyz.code.workouttimer.misc.*
-import kotlinx.android.synthetic.main.card_exercise.view.*
 
 
 class WorkoutActivity : Activity() {
@@ -28,23 +26,19 @@ class WorkoutActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_workout)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewExercise)
-
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
-
-        recyclerView.itemAnimator = NoAnimationItemAnimator()
-        
         val title = intent.getStringExtra("title")
-
         setTitle("Workout: " + title)
 
         exercises += WorkoutManager.getWorkout(this, title).items
 
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewExercise)
+
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        recyclerView.itemAnimator = NoAnimationItemAnimator()
         recyclerView.adapter = ExerciseAdapter(exercises)
 
-        startBtn.setOnClickListener { view ->
+        startBtn.setOnClickListener {
             startBtn.isEnabled = false
-            pauseBtn.isEnabled = true
 
             recyclerView.smoothScrollToPosition(0)
 
@@ -59,31 +53,11 @@ class WorkoutActivity : Activity() {
             recyclerView.adapter.notifyDataSetChanged()
 
             startBtn.isEnabled = true
-            pauseBtn.isEnabled = false
 
             currentPosition = 0
-
-            pauseBtn.text = "Pause"
-            setPauseBtnListener(recyclerView)
-        }
-
-        setPauseBtnListener(recyclerView)
-    }
-
-
-
-    private fun setPauseBtnListener(recyclerView: RecyclerView) {
-        pauseBtn.setOnClickListener {
-            pauseBtn.text = "Resume"
-            currentTimer?.cancel()
-            pauseBtn.setOnClickListener {
-                pauseBtn.text = "Pause"
-                scheduler(recyclerView, currentPosition)
-
-                setPauseBtnListener(recyclerView)
-            }
         }
     }
+
 
     private fun reset() {
         // Loop over all exercises and reset progress.
@@ -96,35 +70,23 @@ class WorkoutActivity : Activity() {
 
         if (position >= exercises.size) {
             Toast.makeText(this, "Workout complete!", Toast.LENGTH_SHORT).show()
-            startBtn.isEnabled = true
 
-            reset();
+            reset()
 
             recyclerView.adapter.notifyDataSetChanged()
 
         } else {
             val item = exercises[position]
-            val itemView = recyclerView.layoutManager.findViewByPosition(position)
-            val itemViewLength = itemView.exerciseCardLength
 
             if (item.length == 0L) {
 
-                pauseBtn.isEnabled = false
+                progressBar.setOnClickListener {
 
-                itemViewLength.visibility = TextView.VISIBLE
-
-                recyclerView.setOnClickListener {
-
-                    Log.d("Debug", "Clicked!!!!")
                     // clear click listener.
                     it.setOnClickListener(null)
-
-                    itemViewLength.visibility = TextView.GONE
-
                     scheduler(recyclerView, position + 1)
-
-                    pauseBtn.isEnabled = true
                 }
+
             } else {
 
                 val oldProgress = item.progress
