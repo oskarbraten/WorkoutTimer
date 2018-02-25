@@ -1,7 +1,6 @@
 package com.boyz.code.workouttimer
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -9,29 +8,124 @@ import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.LinearLayout
-import com.boyz.code.workouttimer.misc.Workout
-import com.boyz.code.workouttimer.misc.WorkoutItem
-import com.boyz.code.workouttimer.misc.WorkoutItemAdapter
-import com.boyz.code.workouttimer.misc.WorkoutManager
-import com.google.gson.Gson
+import kotlinx.android.synthetic.main.activity_workout.*
+import android.os.CountDownTimer
+import android.widget.TextView
+import android.widget.Toast
+import com.boyz.code.workouttimer.misc.*
+import kotlinx.android.synthetic.main.card_workout_item.view.*
+
 
 class WorkoutActivity : Activity() {
 
     private val workoutItems = ArrayList<WorkoutItem>()
+    private var currentTimer: CountDownTimer? = null
+    private var currentProgress: Pair<Int, Long> = Pair(0, 0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_workout)
 
-        val rv = findViewById<RecyclerView>(R.id.recyclerViewWorkoutItem)
-        rv.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewWorkoutItem)
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         
         val title = intent.getStringExtra("title")
-        workoutItems += WorkoutManager.getWorkout(this, title).items
+
         setTitle("Workout: " + title)
 
-        var adapter = WorkoutItemAdapter(workoutItems)
-        rv.adapter = adapter
+        workoutItems += WorkoutManager.getWorkout(this, title).items
+
+        recyclerView.adapter = WorkoutItemAdapter(workoutItems)
+
+        startBtn.setOnClickListener { view ->
+            startBtn.isEnabled = false
+            pauseBtn.isEnabled = true
+
+            recyclerView.smoothScrollToPosition(0)
+            recyclerView.disableScrolling()
+
+            scheduler(recyclerView, position = 0)
+        }
+
+        resetBtn.setOnClickListener {
+            currentTimer?.cancel()
+            recyclerView.adapter.notifyDataSetChanged()
+
+            startBtn.isEnabled = true
+            pauseBtn.isEnabled = false
+
+            currentProgress = Pair(0, 0)
+
+            pauseBtn.text = "Pause"
+            setPauseBtnListener(recyclerView)
+        }
+
+        setPauseBtnListener(recyclerView)
+    }
+
+    fun setPauseBtnListener(recyclerView: RecyclerView) {
+        pauseBtn.setOnClickListener {
+            pauseBtn.text = "Resume"
+            currentTimer?.cancel()
+            pauseBtn.setOnClickListener {
+                pauseBtn.text = "Pause"
+                scheduler(recyclerView, currentProgress.first, currentProgress.second)
+
+                setPauseBtnListener(recyclerView)
+            }
+        }
+    }
+
+    fun scheduler(recyclerView: RecyclerView, position: Int, progressMillis: Long? = null) {
+
+        if (position >= workoutItems.size) {
+            Toast.makeText(this, "Workout complete!", Toast.LENGTH_SHORT).show()
+            startBtn.isEnabled = true
+            recyclerView.adapter.notifyDataSetChanged()
+
+        } else {
+            val item = workoutItems.get(position)
+            val itemView = recyclerView.layoutManager.findViewByPosition(position)
+            val itemViewLength = itemView.cardWorkoutItemLength
+
+            itemView.requestFocus() // scroll to item if not in view.
+
+            if (item.length == 0) {
+
+                pauseBtn.isEnabled = false
+
+                itemView.cardWorkoutItemLength.visibility = TextView.VISIBLE
+
+                itemView.setOnClickListener {
+                    itemViewLength.visibility = TextView.GONE
+                    scheduler(recyclerView, position + 1)
+                    it.setOnClickListener(null)
+
+                    pauseBtn.isEnabled = true
+                }
+
+            } else {
+
+                var progressMillis2 = progressMillis
+
+                if (progressMillis2 == null) {
+                    progressMillis2 = item.length.toLong() * 1000
+                }
+                currentTimer = object : CountDownTimer(progressMillis2, 50) {
+
+                    override fun onTick(millisUntilFinished: Long) {
+                        itemViewLength.text = (Math.ceil(millisUntilFinished.toDouble() / 1000)).toInt().convertLength()
+                        currentProgress = Pair(position, millisUntilFinished)
+                    }
+
+                    override fun onFinish() {
+                        itemViewLength.text = (0).toInt().convertLength()
+
+                        scheduler(recyclerView, position + 1)
+                    }
+                }.start()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

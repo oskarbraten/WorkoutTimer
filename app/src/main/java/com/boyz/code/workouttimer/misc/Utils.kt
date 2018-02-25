@@ -1,6 +1,7 @@
 package com.boyz.code.workouttimer.misc
 
 import android.content.Context
+import android.support.v7.widget.RecyclerView
 import com.google.gson.Gson
 
 fun Int?.convertLength(): String {
@@ -27,6 +28,14 @@ fun Int?.convertLength(): String {
     }
 
     return "$cHours:$cMinutes:$cSeconds"
+}
+
+fun RecyclerView.disableScrolling() {
+    this.addOnItemTouchListener(RecyclerViewDisabler())
+}
+
+fun RecyclerView.enableScrolling() {
+    this.removeOnItemTouchListener(RecyclerViewDisabler())
 }
 
 object WorkoutManager {
