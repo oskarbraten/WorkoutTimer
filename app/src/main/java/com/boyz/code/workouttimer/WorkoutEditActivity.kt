@@ -15,6 +15,7 @@ import com.boyz.code.workouttimer.data.Workout
 import com.boyz.code.workouttimer.misc.ExerciseEditAdapter
 import com.boyz.code.workouttimer.misc.WorkoutManager
 import kotlinx.android.synthetic.main.activity_workout_edit.*
+import kotlinx.android.synthetic.main.add_exercise_dialog.view.*
 import kotlinx.android.synthetic.main.add_workout_dialog.view.*
 
 class WorkoutEditActivity : Activity() {
@@ -39,6 +40,30 @@ class WorkoutEditActivity : Activity() {
         deleteWorkoutBtn.setOnClickListener {
             val inf = LayoutInflater.from(this)
             val promptsView = inf.inflate(R.layout.delete_confirmation_dialog, null)
+            val alertDialogBuilder = AlertDialog.Builder(this)
+
+            alertDialogBuilder.setView(promptsView)
+
+            alertDialogBuilder.setCancelable(false)
+            alertDialogBuilder.setPositiveButton("OK", { dialogInterface: DialogInterface, i: Int ->
+                WorkoutManager.deleteWorkout(this, exerciseTitle)
+                finish()
+                startActivity(Intent(this, OverviewActivity::class.java))
+                Toast.makeText(this, "Workout deleted!", Toast.LENGTH_LONG).show()
+            })
+
+            alertDialogBuilder.setNegativeButton("Cancel", { dialogInterface: DialogInterface, i: Int ->
+                Toast.makeText(this, "jaja, sånn kan det gå", Toast.LENGTH_LONG).show()
+            })
+
+            val alertDialog = alertDialogBuilder.create()
+
+            alertDialog.show()
+        }
+
+        addExerciseButton.setOnClickListener {
+            val inf = LayoutInflater.from(this)
+            val promptsView = inf.inflate(R.layout.add_exercise_dialog, null)
             val alertDialogBuilder = AlertDialog.Builder(this)
 
             alertDialogBuilder.setView(promptsView)
