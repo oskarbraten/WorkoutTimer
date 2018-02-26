@@ -37,28 +37,24 @@ class OverviewActivity : Activity() {
         recyclerView.adapter = adapter
 
         addWorkoutBtn.setOnClickListener {
-            addWorkout()
-            adapter.notifyDataSetChanged()
-        }
-    }
+            val addWorkoutDialogFragment = AddWorkoutDialogFragment()
 
-    private fun addWorkout() {
+            addWorkoutDialogFragment.show(fragmentManager, "addWorkoutDialog")
 
-        val addWorkoutDialogFragment = AddWorkoutDialogFragment()
+            addWorkoutDialogFragment.onConfirmedListener = { title: String, description: String ->
+                val items = ArrayList<Exercise>()
+                items.add(Exercise("Plank", 15000))
+                items.add(Exercise("Pause", 15000))
+                items.add(Exercise("Push-ups", 0))
 
-        addWorkoutDialogFragment.show(fragmentManager, "addWorkoutDialog")
+                val workout = Workout(title, items)
 
-        addWorkoutDialogFragment.onConfirmedListener = { title: String, description: String ->
-            val items = ArrayList<Exercise>()
-            items.add(Exercise("Plank", 15000))
-            items.add(Exercise("Pause", 15000))
-            items.add(Exercise("Push-ups", 0))
+                workouts.add(workout)
 
-            val workout = Workout(title, items)
+                WorkoutManager.addWorkout(this@OverviewActivity, workout)
 
-            workouts.add(workout)
-
-            WorkoutManager.addWorkout(this@OverviewActivity, workout)
+                adapter.notifyDataSetChanged()
+            }
         }
     }
 }
