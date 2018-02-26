@@ -35,7 +35,7 @@ class OverviewActivity : Activity() {
         var adapter = WorkoutAdapter(workouts)
         recyclerView.adapter = adapter
 
-        addWorkoutButton.setOnClickListener {
+        addWorkoutBtn.setOnClickListener {
             addWorkout()
             adapter.notifyDataSetChanged()
         }

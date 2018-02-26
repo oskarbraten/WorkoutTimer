@@ -4,9 +4,6 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import com.boyz.code.workouttimer.data.Workout
 import com.google.gson.Gson
-import android.widget.Toast
-
-
 
 fun Long?.toTimerFormat(): String {
 
