@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/workoutMenuOptions"
-        android:icon="@android:drawable/ic_menu_preferences"
-        android:showAsAction="ifRoom"
-        android:title="Item" />
+        android:id="@+id/workoutMenuEdit"
+        android:title="Edit" />
+    <item
+        android:id="@+id/workoutMenuDelete"
+        android:title="Delete" />
 </menu>

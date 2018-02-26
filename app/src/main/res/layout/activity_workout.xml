@@ -36,7 +36,8 @@
             android:layout_height="wrap_content"
             android:text="Status"
             android:textAlignment="center"
-            android:textAppearance="@android:style/TextAppearance.Material.Large" />
+            android:textAppearance="@android:style/TextAppearance.Material.Large"
+            android:textSize="56dp" />
 
     </LinearLayout>
 
@@ -55,18 +56,34 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <Button
+    <ToggleButton
         android:id="@+id/actionBtn"
         android:layout_width="@dimen/fab_size_normal"
         android:layout_height="@dimen/fab_size_normal"
         android:layout_marginBottom="24dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/circle"
+        android:checked="false"
         android:elevation="6dp"
-        android:foreground="@drawable/ic_play_arrow"
+        android:foreground="@drawable/toggle_play"
         android:foregroundGravity="center"
         android:stateListAnimator="@drawable/floating_action_button_animator"
+        android:textOff=""
+        android:textOn=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/resetBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Hold to reset"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

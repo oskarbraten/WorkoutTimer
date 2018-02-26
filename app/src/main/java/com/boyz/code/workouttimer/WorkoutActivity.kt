@@ -15,14 +15,16 @@ import com.boyz.code.workouttimer.data.Workout
 import com.boyz.code.workouttimer.misc.*
 import android.support.v7.widget.LinearSmoothScroller
 import android.util.DisplayMetrics
+import android.widget.Button
 
 
 class WorkoutActivity : Activity() {
 
     private lateinit var workout: Workout
     private lateinit var recyclerView: RecyclerView
+
     private var currentTimer: CountDownTimer? = null
-    private var currentPosition: Int = 0
+    private var currentProgress: Pair<Int, Long> = Pair(0, 0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,50 +41,63 @@ class WorkoutActivity : Activity() {
         recyclerView.itemAnimator = NoAnimationItemAnimator()
         recyclerView.adapter = ExerciseAdapter(workout.items)
 
-        actionBtn.setOnClickListener {
-            workoutProgress.visibility = LinearLayout.VISIBLE
+        actionBtn.setOnCheckedChangeListener { buttonView, isChecked ->
+            when (isChecked) {
+                true -> {
+                    workoutProgress.visibility = LinearLayout.VISIBLE
+                    resetBtn.visibility = Button.GONE // hide reset button.
+                    scheduler(position = currentProgress.first, progress = currentProgress.second) // resume/start
 
-            scheduler(position = 0)
+
+                }
+                else -> {
+                    // playing --> pause.
+                    currentTimer?.cancel()
+                    currentTimer = null
+
+                    resetBtn.visibility = Button.VISIBLE // show reset button.
+                }
+            }
+        }
+
+        resetBtn.setOnLongClickListener {
+            // reset progress.
+            currentProgress = Pair(0, 0)
+            workoutProgress.visibility = LinearLayout.GONE // hide progress.
+            resetBtn.visibility = Button.GONE // hide reset button.
+            true
         }
     }
 
     override fun onResume() {
         super.onResume()
+
+        // reload workouts.
         workout.items.clear()
         workout.items.addAll(WorkoutManager.getWorkout(this, workout.title).items)
 
+        // update view.
         recyclerView.adapter.notifyDataSetChanged()
     }
 
-    private fun scheduler(position: Int) {
+    private fun scheduler(position: Int, progress: Long = 0) {
 
         if (position >= workout.items.size) {
             Toast.makeText(this, "Workout complete!", Toast.LENGTH_SHORT).show()
-
-            workout.reset()
             workoutProgress.visibility = LinearLayout.GONE
+            currentProgress = Pair(0, 0)
 
-            recyclerView.adapter.notifyDataSetChanged()
-
+            // clear timer.
+            currentTimer = null
+            actionBtn.isChecked = false
         } else {
             val item = workout.items[position]
 
+            // save progress.
+            currentProgress = Pair(position, progress)
+
+            // set title.
             workoutProgressTitle.text = item.title
-
-            // scroll to item if the view is scrollable
-            val smoothScroller = object : LinearSmoothScroller(recyclerView.context) {
-                override fun getVerticalSnapPreference(): Int {
-                    return LinearSmoothScroller.SNAP_TO_START
-                }
-
-                override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
-                    return super.calculateSpeedPerPixel(displayMetrics) * 3
-                }
-            }
-            smoothScroller.targetPosition = position
-
-            (recyclerView.layoutManager as LinearLayoutManager).startSmoothScroll(smoothScroller)
-
 
             if (item.length == 0L) {
 
@@ -94,19 +109,16 @@ class WorkoutActivity : Activity() {
                     it.setOnClickListener(null)
                     scheduler(position + 1)
                 }
-            } else {
-                workoutProgressStatus.text = (item.length - item.progress).toTimerFormat()
 
-                currentTimer = object : CountDownTimer((item.length - item.progress), 250) {
+            } else {
+                workoutProgressStatus.text = (item.length - progress).toTimerFormat()
+
+                currentTimer = object : CountDownTimer((item.length - progress), 250) {
 
                     override fun onTick(millisUntilFinished: Long) {
-                        item.progress += 250
-
-                        workoutProgressStatus.text = (item.length - item.progress).toTimerFormat()
-
-                        recyclerView.adapter.notifyItemChanged(position)
-
-                        currentPosition = position
+                        // increment progress by 250 ms.
+                        currentProgress = Pair(position, currentProgress.second + 250)
+                        workoutProgressStatus.text = (item.length - currentProgress.second).toTimerFormat()
                     }
 
                     override fun onFinish() {
@@ -115,6 +127,24 @@ class WorkoutActivity : Activity() {
                         scheduler(position + 1)
                     }
                 }.start()
+            }
+
+            // finally if there is a next item scroll to it.
+            val scrollable = recyclerView.computeVerticalScrollRange() > recyclerView.height
+            if (scrollable && position + 1 >= workout.items.size) {
+                // scroll to item if the view is scrollable
+                val smoothScroller = object : LinearSmoothScroller(recyclerView.context) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return LinearSmoothScroller.SNAP_TO_START
+                    }
+
+                    override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
+                        return super.calculateSpeedPerPixel(displayMetrics) * 3
+                    }
+                }
+                smoothScroller.targetPosition = position
+
+                (recyclerView.layoutManager as LinearLayoutManager).startSmoothScroll(smoothScroller)
             }
         }
     }
@@ -126,10 +156,13 @@ class WorkoutActivity : Activity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item!!.itemId) {
-            R.id.workoutMenuOptions -> {
+            R.id.workoutMenuEdit -> {
                 val intent = Intent(this, WorkoutEditActivity::class.java)
                 intent.putExtra("title", workout.title)
                 startActivity(intent)
+                true
+            }
+            R.id.workoutMenuDelete -> {
                 true
             }
             else -> super.onOptionsItemSelected(item)

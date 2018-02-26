@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:text="Status"
             android:textAlignment="center"
-            android:textAppearance="@android:style/TextAppearance.Material.Large" />
+            android:textAppearance="@style/ExerciseStatus" />
 
     </LinearLayout>
 
