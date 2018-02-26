@@ -37,6 +37,33 @@ fun Long?.toTimerFormat(): String {
     }
 }
 
+fun Long?.toTimerInputFormat(): String {
+
+    val total = this!! / 1000
+
+    var minutes = total / (60)
+
+    val seconds = when (minutes) {
+        100L -> {
+            minutes = 99
+            total - (99 * 60)
+        }
+        else -> (total % 60)
+    }
+
+    val cMinutes = when (minutes) {
+        in 0..9 -> "0" + minutes.toString()
+        else -> minutes.toString()
+    }
+
+    val cSeconds = when (seconds) {
+        in 0..9 -> "0" + seconds.toString()
+        else -> seconds.toString()
+    }
+
+    return "$cMinutes:$cSeconds"
+}
+
 fun RecyclerView.disableScrolling() {
     this.addOnItemTouchListener(RecyclerViewDisableListener())
 }
