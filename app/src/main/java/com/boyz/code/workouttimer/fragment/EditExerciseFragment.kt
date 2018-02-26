@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.edit_exercise_dialog.view.*
 class EditExerciseFragment : DialogFragment() {
 
     var onConfirmedListener: ((Exercise) -> Unit)? = null
+    var onDeleteListener: (() -> Unit)? = null
 
     companion object {
         val ARG_TITLE = "default"
@@ -38,10 +39,15 @@ class EditExerciseFragment : DialogFragment() {
         val secondsEditInput = view.secondsEditInput
         val includeTimerEditSwitcher = view.includeTimerEditSwitcher
         val durationEditWrapper = view.durationEditWrapper
+        val deleteExerciseBtn = view.deleteExerciseBtn
 
         exerciseTitleEditInput.setText(arguments.getString(ARG_TITLE))
         minutesEditInput.setText(times[0])
         secondsEditInput.setText(times[1])
+
+        deleteExerciseBtn.setOnClickListener {
+            onDeleteListener!!()
+        }
 
         val alertDialog = AlertDialog.Builder(activity)
                 .setTitle("Edit")

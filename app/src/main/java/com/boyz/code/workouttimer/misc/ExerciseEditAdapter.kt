@@ -69,6 +69,16 @@ class ExerciseEditAdapter(val workout: Workout): RecyclerView.Adapter<ExerciseEd
                 WorkoutManager.overwriteWorkout(it.context, newWorkout)
             }
 
+            editExerciseFragment.onDeleteListener = {
+                exerciseList.removeAt(position)
+                notifyDataSetChanged()
+
+                val newWorkout = Workout(workout.title, exerciseList)
+                WorkoutManager.overwriteWorkout(it.context, newWorkout)
+
+                editExerciseFragment.dismiss()
+            }
+
         }
 
     }
