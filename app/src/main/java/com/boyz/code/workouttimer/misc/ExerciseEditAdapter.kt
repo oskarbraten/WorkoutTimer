@@ -9,12 +9,15 @@ import android.widget.TextView
 import com.boyz.code.workouttimer.R
 import com.boyz.code.workouttimer.WorkoutEditActivity
 import com.boyz.code.workouttimer.data.Exercise
+import com.boyz.code.workouttimer.data.Workout
 import com.boyz.code.workouttimer.fragment.EditExerciseFragment
 import kotlinx.android.synthetic.main.card_exercise_edit.view.*
 
-class ExerciseEditAdapter(val exerciseList: ArrayList<Exercise>): RecyclerView.Adapter<ExerciseEditAdapter.ViewHolder>() {
+class ExerciseEditAdapter(val workout: Workout): RecyclerView.Adapter<ExerciseEditAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+
+        val exerciseList = workout.items
 
         holder?.title?.text = exerciseList[position].title
         holder?.length?.visibility = TextView.VISIBLE
@@ -34,6 +37,9 @@ class ExerciseEditAdapter(val exerciseList: ArrayList<Exercise>): RecyclerView.A
                 exerciseList.removeAt(position)
                 exerciseList.add(position - 1, exercise)
                 notifyDataSetChanged()
+
+                val newWorkout = Workout(workout.title, exerciseList)
+                WorkoutManager.overwriteWorkout(it.context, newWorkout)
             }
         }
 
@@ -43,6 +49,10 @@ class ExerciseEditAdapter(val exerciseList: ArrayList<Exercise>): RecyclerView.A
                 exerciseList.removeAt(position)
                 exerciseList.add(position + 1, exercise)
                 notifyDataSetChanged()
+
+                val newWorkout = Workout(workout.title, exerciseList)
+                WorkoutManager.overwriteWorkout(it.context, newWorkout)
+
             }
         }
 
@@ -58,7 +68,7 @@ class ExerciseEditAdapter(val exerciseList: ArrayList<Exercise>): RecyclerView.A
     }
 
     override fun getItemCount(): Int {
-        return exerciseList.size
+        return workout.items.size
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

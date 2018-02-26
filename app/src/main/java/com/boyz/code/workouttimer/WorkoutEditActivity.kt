@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.add_workout_dialog.view.*
 
 class WorkoutEditActivity : Activity() {
 
-    private val exercises = ArrayList<Exercise>()
+    private lateinit var workout: Workout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,12 +34,12 @@ class WorkoutEditActivity : Activity() {
 
         title = "Workout: " + workoutTitle
 
+        workout = WorkoutManager.getWorkout(this, workoutTitle)
+
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewWorkoutEdit)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
 
-        exercises += WorkoutManager.getWorkout(this, workoutTitle).items
-
-        recyclerView.adapter = ExerciseEditAdapter(exercises)
+        recyclerView.adapter = ExerciseEditAdapter(workout)
 
         deleteWorkoutBtn.setOnClickListener {
             val inf = LayoutInflater.from(this)
@@ -88,8 +88,6 @@ class WorkoutEditActivity : Activity() {
                 }
             }
 
-
-
             val exerciseTitleInput = promptsView.exerciseTitleInput
             val minutesInput = promptsView.minutesInput
             val secondsInput = promptsView.secondsInput
@@ -105,8 +103,8 @@ class WorkoutEditActivity : Activity() {
                     }
                     val exercise = Exercise(exerciseTitleInput.text.toString(), length)
 
-                    exercises.add(exercise)
-                    val newWorkout = Workout(workoutTitle, exercises)
+                    workout.items.add(exercise)
+                    val newWorkout = Workout(workoutTitle, workout.items)
 
                     WorkoutManager.overwriteWorkout(this, newWorkout)
                 }
