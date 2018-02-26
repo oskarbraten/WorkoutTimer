@@ -99,7 +99,11 @@ class WorkoutEditActivity : Activity() {
                 if (exerciseTitleInput.equals("")) {
                     Toast.makeText(this, "jaja, sånn kan det gå", Toast.LENGTH_LONG).show()
                 } else {
-                    val exercise = Exercise(exerciseTitleInput.text.toString(), timeInputConverter(minutesInput.text.toString().toInt(), secondsInput.text.toString().toInt()))
+                    val length = when (promptsView.includeTimerSwitcher.isChecked) {
+                        false -> 0
+                        else -> timeInputConverter(minutesInput.text.toString().toInt(), secondsInput.text.toString().toInt())
+                    }
+                    val exercise = Exercise(exerciseTitleInput.text.toString(), length)
 
                     exercises.add(exercise)
                     val newWorkout = Workout(workoutTitle, exercises)
