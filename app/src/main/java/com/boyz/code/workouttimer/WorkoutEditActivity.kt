@@ -104,8 +104,4 @@ class WorkoutEditActivity : Activity() {
         }
     }
 
-    //Legg til i utils
-    fun timeInputConverter(min: Int, sec: Int): Long = ((min * 60000) + (sec * 1000)).toLong()
-
-//    fun isInputsValid(): Boolean = (!exerciseTitleInput.text.toString().equals("")) && (!minutesInput.text.toString().equals("00")) && ((!minutesInput.text.toString().equals("0"))) && (!secondsInput.text.toString().equals("00")) && ((!secondsInput.text.toString().equals("0")))
 }

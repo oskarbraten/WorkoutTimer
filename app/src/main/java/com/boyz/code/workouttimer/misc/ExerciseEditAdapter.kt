@@ -57,7 +57,18 @@ class ExerciseEditAdapter(val workout: Workout): RecyclerView.Adapter<ExerciseEd
         }
 
         holder?.optionBtn?.setOnClickListener {
-            EditExerciseFragment.show(it.context as Activity, exerciseList[position].title, exerciseList[position].length.toTimerInputFormat())
+            val editExerciseFragment = EditExerciseFragment.create(exerciseList[position].title, exerciseList[position].length.toTimerInputFormat())
+
+            editExerciseFragment.show((it.context as Activity).fragmentManager, "BadlaMeLøg")
+
+            editExerciseFragment.onConfirmedListener = {exercise ->
+                exerciseList[position] = exercise
+                notifyDataSetChanged()
+
+                val newWorkout = Workout(workout.title, exerciseList)
+                WorkoutManager.overwriteWorkout(it.context, newWorkout)
+            }
+
         }
 
     }

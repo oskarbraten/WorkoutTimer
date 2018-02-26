@@ -61,6 +61,8 @@ fun Long?.toTimerInputFormat(): String {
     return "$cMinutes:$cSeconds"
 }
 
+fun timeInputConverter(min: Int, sec: Int): Long = ((min * 60000) + (sec * 1000)).toLong()
+
 fun RecyclerView.disableScrolling() {
     this.addOnItemTouchListener(RecyclerViewDisableListener())
 }
