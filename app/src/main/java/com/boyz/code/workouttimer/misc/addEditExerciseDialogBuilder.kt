@@ -7,7 +7,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Switch
 
-fun buildAddEditDialog(exerciseTitleInput: EditText, includeTimerSwitcher: Switch, minutesInput: EditText, secondsInput: EditText, durationWrapper: LinearLayout, alertDialog: AlertDialog){
+fun setExerciseDialogValidators(exerciseTitleInput: EditText, includeTimerSwitcher: Switch, minutesInput: EditText, secondsInput: EditText, durationWrapper: LinearLayout, alertDialog: AlertDialog){
 
     minutesInput.setOnFocusChangeListener { view, b ->
         if (!b && !minutesInput.text.isNullOrEmpty()) {

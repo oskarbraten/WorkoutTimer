@@ -99,7 +99,7 @@ class WorkoutEditActivity : Activity() {
             alertDialog.show()
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = false
 
-            buildAddEditDialog(exerciseTitleInput, includeTimerSwitcher, minutesInput, secondsInput, durationWrapper, alertDialog)
+            setExerciseDialogValidators(exerciseTitleInput, includeTimerSwitcher, minutesInput, secondsInput, durationWrapper, alertDialog)
 
         }
     }

@@ -7,6 +7,7 @@ import android.app.DialogFragment
 import android.os.Bundle
 import android.util.Log
 import com.boyz.code.workouttimer.R
+import com.boyz.code.workouttimer.misc.setExerciseDialogValidators
 import kotlinx.android.synthetic.main.edit_exercise_dialog.view.*
 
 class EditExerciseFragment : DialogFragment() {
@@ -28,15 +29,19 @@ class EditExerciseFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = activity.layoutInflater.inflate(R.layout.edit_exercise_dialog, null)
-
-        view.exerciseTitleEditInput.setText(arguments.getString(ARG_TITLE))
-
         val times = arguments.getString(ARG_LENGTH).split(":")
 
-        view.minutesEditInput.setText(times[0])
-        view.secondsEditInput.setText(times[1])
+        val exerciseTitleEditInput = view.exerciseTitleEditInput
+        val minutesEditInput = view.minutesEditInput
+        val secondsEditInput = view.secondsEditInput
+        val includeTimerEditSwitcher = view.includeTimerEditSwitcher
+        val durationEditWrapper = view.durationEditWrapper
 
-        return AlertDialog.Builder(activity)
+        exerciseTitleEditInput.setText(arguments.getString(ARG_TITLE))
+        minutesEditInput.setText(times[0])
+        secondsEditInput.setText(times[1])
+
+        val alertDialog = AlertDialog.Builder(activity)
                 .setTitle("Edit")
                 .setView(view)
                 .setPositiveButton("OK") {
@@ -51,5 +56,9 @@ class EditExerciseFragment : DialogFragment() {
                 .apply {
                     setCanceledOnTouchOutside(false)
                 }
+
+        setExerciseDialogValidators(exerciseTitleEditInput, includeTimerEditSwitcher, minutesEditInput, secondsEditInput, durationEditWrapper, alertDialog)
+
+        return alertDialog
     }
 }
