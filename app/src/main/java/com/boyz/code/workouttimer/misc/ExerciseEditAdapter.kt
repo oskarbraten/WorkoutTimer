@@ -22,7 +22,7 @@ class ExerciseEditAdapter(val workout: Workout): RecyclerView.Adapter<ExerciseEd
         holder?.title?.text = exerciseList[position].title
         holder?.length?.visibility = TextView.VISIBLE
 
-        holder?.itemView?.setOnClickListener(null)
+//        holder?.itemView?.setOnClickListener(null)
 
         if (exerciseList[position].length == 0L) {
             holder?.length?.text = "Tap to continue"
@@ -56,7 +56,32 @@ class ExerciseEditAdapter(val workout: Workout): RecyclerView.Adapter<ExerciseEd
             }
         }
 
-        holder?.optionBtn?.setOnClickListener {
+//        holder?.optionBtn?.setOnClickListener {
+//            val editExerciseFragment = EditExerciseFragment.create(exerciseList[position].title, exerciseList[position].length.toTimerInputFormat())
+//
+//            editExerciseFragment.show((it.context as Activity).fragmentManager, "BadlaMeLøg")
+//
+//            editExerciseFragment.onConfirmedListener = {exercise ->
+//                exerciseList[position] = exercise
+//                notifyDataSetChanged()
+//
+//                val newWorkout = Workout(workout.title, exerciseList)
+//                WorkoutManager.overwriteWorkout(it.context, newWorkout)
+//            }
+//
+//            editExerciseFragment.onDeleteListener = {
+//                exerciseList.removeAt(position)
+//                notifyDataSetChanged()
+//
+//                val newWorkout = Workout(workout.title, exerciseList)
+//                WorkoutManager.overwriteWorkout(it.context, newWorkout)
+//
+//                editExerciseFragment.dismiss()
+//            }
+//
+//        }
+
+        holder?.itemView?.setOnClickListener {
             val editExerciseFragment = EditExerciseFragment.create(exerciseList[position].title, exerciseList[position].length.toTimerInputFormat())
 
             editExerciseFragment.show((it.context as Activity).fragmentManager, "BadlaMeLøg")
@@ -78,7 +103,6 @@ class ExerciseEditAdapter(val workout: Workout): RecyclerView.Adapter<ExerciseEd
 
                 editExerciseFragment.dismiss()
             }
-
         }
 
     }
@@ -97,7 +121,7 @@ class ExerciseEditAdapter(val workout: Workout): RecyclerView.Adapter<ExerciseEd
         val length = itemView.exerciseEditCardLength!!
         val moveUpBtn = itemView.exerciseMoveUpBtn!!
         val moveDownBtn = itemView.exerciseMoveDownBtn!!
-        val optionBtn = itemView.exerciseOptionBtn!!
+//        val optionBtn = itemView.exerciseOptionBtn!!
     }
 
 }
