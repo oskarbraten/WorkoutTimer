@@ -10,10 +10,11 @@ import android.view.MenuItem
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.activity_workout.*
 import android.os.CountDownTimer
-import android.view.View
 import android.widget.Toast
 import com.boyz.code.workouttimer.data.Workout
 import com.boyz.code.workouttimer.misc.*
+import android.support.v7.widget.LinearSmoothScroller
+import android.util.DisplayMetrics
 
 
 class WorkoutActivity : Activity() {
@@ -41,9 +42,16 @@ class WorkoutActivity : Activity() {
         actionBtn.setOnClickListener {
             workoutProgress.visibility = LinearLayout.VISIBLE
 
-            recyclerView.smoothScrollToPosition(0)
             scheduler(position = 0)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        workout.items.clear()
+        workout.items.addAll(WorkoutManager.getWorkout(this, workout.title).items)
+
+        recyclerView.adapter.notifyDataSetChanged()
     }
 
     private fun scheduler(position: Int) {
@@ -60,6 +68,21 @@ class WorkoutActivity : Activity() {
             val item = workout.items[position]
 
             workoutProgressTitle.text = item.title
+
+            // scroll to item if the view is scrollable
+            val smoothScroller = object : LinearSmoothScroller(recyclerView.context) {
+                override fun getVerticalSnapPreference(): Int {
+                    return LinearSmoothScroller.SNAP_TO_START
+                }
+
+                override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
+                    return super.calculateSpeedPerPixel(displayMetrics) * 3
+                }
+            }
+            smoothScroller.targetPosition = position
+
+            (recyclerView.layoutManager as LinearLayoutManager).startSmoothScroll(smoothScroller)
+
 
             if (item.length == 0L) {
 
