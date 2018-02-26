@@ -15,19 +15,20 @@ import android.widget.Toast
 import com.boyz.code.workouttimer.misc.WorkoutAdapter
 import com.boyz.code.workouttimer.data.Workout
 import com.boyz.code.workouttimer.data.Exercise
+import com.boyz.code.workouttimer.fragment.AddWorkoutDialogFragment
 import com.boyz.code.workouttimer.misc.WorkoutManager
 import kotlinx.android.synthetic.main.activity_overview.*
 import kotlinx.android.synthetic.main.add_workout_dialog.view.*
 
 class OverviewActivity : Activity() {
 
-    private val workouts = ArrayList<Workout>()
+    private lateinit var workouts: ArrayList<Workout>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_overview)
 
-        workouts.addAll(WorkoutManager.getWorkouts(this))
+        workouts = ArrayList(WorkoutManager.getWorkouts(this))
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewWorkout)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
@@ -42,45 +43,22 @@ class OverviewActivity : Activity() {
     }
 
     private fun addWorkout() {
-        val inf = LayoutInflater.from(this)
-        val promptsView = inf.inflate(R.layout.add_workout_dialog, null)
-        val alertDialogBuilder = AlertDialog.Builder(this)
 
-        alertDialogBuilder.setView(promptsView)
+        val addWorkoutDialogFragment = AddWorkoutDialogFragment()
 
-        val workoutTitleInput = promptsView.workoutTitleInput
+        addWorkoutDialogFragment.show(fragmentManager, "addWorkoutDialog")
 
-        alertDialogBuilder.setCancelable(false)
-        alertDialogBuilder.setPositiveButton("OK", null)
-        alertDialogBuilder.setNegativeButton("Cancel", { dialogInterface: DialogInterface, i: Int ->
-            Toast.makeText(this, "jaja, sånn kan det gå", Toast.LENGTH_LONG).show()
-        })
+        addWorkoutDialogFragment.onConfirmedListener = { title: String, description: String ->
+            val items = ArrayList<Exercise>()
+            items.add(Exercise("Plank", 15000))
+            items.add(Exercise("Pause", 15000))
+            items.add(Exercise("Push-ups", 0))
 
-        val alertDialog = alertDialogBuilder.create()
-        alertDialog.show()
+            val workout = Workout(title, items)
 
-        val positiveButton: Button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
-        positiveButton.setOnClickListener{
-            val title = promptsView.workoutTitleInput.getText().toString()
+            workouts.add(workout)
 
-            if (WorkoutManager.doesWorkoutExist(this@OverviewActivity, title)) {
-                Toast.makeText(this@OverviewActivity, "Invalid data", Toast.LENGTH_SHORT).show()
-
-            } else {
-                val workoutItems = ArrayList<Exercise>()
-                workoutItems.add(Exercise("Plank", 5000))
-                workoutItems.add(Exercise("Reverse plank", 5000))
-                workoutItems.add(Exercise("Push-ups", 0))
-
-                val workout = Workout(workoutTitleInput.text.toString(), workoutItems)
-                workouts.add(workout)
-                WorkoutManager.addWorkout(this@OverviewActivity, workout)
-                alertDialog.dismiss();
-            }
+            WorkoutManager.addWorkout(this@OverviewActivity, workout)
         }
-
-
     }
-
-
 }

@@ -72,14 +72,11 @@ fun RecyclerView.enableScrolling() {
 object WorkoutManager {
 
     fun getWorkouts(context: Context): List<Workout> {
-
         return context.getSharedPreferences("data", Context.MODE_PRIVATE).all.map {(key, value) ->
             val workout = Gson().fromJson("$value", Workout::class.java)
             Workout(key, workout.items)
         }
     }
-
-
 
     fun doesWorkoutExist(context: Context, title: String) : Boolean {
         var exists = false
