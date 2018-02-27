@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -19,12 +20,15 @@ import android.support.v7.widget.LinearSmoothScroller
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.widget.Button
+import android.media.AudioAttributes
+import android.net.Uri
 
 
 class WorkoutActivity : Activity() {
 
     private lateinit var workout: Workout
     private lateinit var recyclerView: RecyclerView
+    private var sounds: Pair<MediaPlayer, MediaPlayer>? = null
 
     private var currentTimer: CountDownTimer? = null
     private var currentProgress: Pair<Int, Long> = Pair(0, 0)
@@ -42,6 +46,32 @@ class WorkoutActivity : Activity() {
 
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         recyclerView.adapter = ExerciseAdapter(workout.items)
+
+        // initialize media player.
+        Thread({
+            val shortBeep = MediaPlayer()
+            shortBeep.setAudioAttributes(AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build())
+
+            shortBeep.setDataSource(this, Uri.parse("android.resource://com.boyz.code.workouttimer/" + R.raw.beep))
+
+            shortBeep.setVolume(0.25f, 0.25f)
+            shortBeep.prepare()
+
+            val longBeep = MediaPlayer()
+            longBeep.setAudioAttributes(AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build())
+
+            longBeep.setDataSource(this, Uri.parse("android.resource://com.boyz.code.workouttimer/" + R.raw.beep_long))
+            longBeep.setVolume(0.35f, 0.35f)
+            longBeep.prepare()
+
+            sounds = Pair(shortBeep, longBeep)
+        }).run()
 
         actionBtn.setOnCheckedChangeListener { buttonView, isChecked ->
             when (isChecked) {
@@ -126,6 +156,16 @@ class WorkoutActivity : Activity() {
                 currentTimer = object : CountDownTimer((item.length - progress), 250) {
 
                     override fun onTick(millisUntilFinished: Long) {
+
+                        // on the last 3 seconds play beep.
+                        if (currentProgress.second >= (item.length - 4000L) && currentProgress.second % 1000L == 0L) {
+                            if (currentProgress.second < (item.length - 1000L)) {
+                                sounds?.first?.start()
+                            } else {
+                                sounds?.second?.start()
+                            }
+                        }
+
                         // increment progress by 250 ms.
                         currentProgress = Pair(position, currentProgress.second + 250)
                         workoutProgressStatus.text = (item.length - currentProgress.second).toTimerFormat()
