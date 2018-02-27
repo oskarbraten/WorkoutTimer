@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import com.boyz.code.workouttimer.data.Exercise
 import com.boyz.code.workouttimer.data.Workout
+import com.boyz.code.workouttimer.fragment.AddExerciseDialogFragment
 import com.boyz.code.workouttimer.misc.*
 import kotlinx.android.synthetic.main.activity_workout_edit.*
 import kotlinx.android.synthetic.main.dialog_add_exercise.view.*
@@ -78,6 +79,17 @@ class WorkoutEditActivity : Activity() {
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = false
 
             setExerciseDialogValidators(exerciseTitleInput, includeTimerSwitcher, minutesInput, secondsInput, durationWrapper, alertDialog)
+
+//            val addExerciseDialogFragment = AddExerciseDialogFragment()
+//
+//            addExerciseDialogFragment.show((it.context as Activity).fragmentManager, "BadlaMeLøg")
+//
+//            addExerciseDialogFragment.onConfirmedListener = { exercise ->
+//                workout.items.add(exercise)
+//                val newWorkout = Workout(workout.title, workout.items, workout.description)
+//
+//                WorkoutManager.overwriteWorkout(this, newWorkout)
+//            }
 
         }
     }
