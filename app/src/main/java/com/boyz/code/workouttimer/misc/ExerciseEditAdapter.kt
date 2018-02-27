@@ -2,6 +2,7 @@ package com.boyz.code.workouttimer.misc
 
 import android.app.Activity
 import android.support.v7.widget.RecyclerView
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,8 +22,9 @@ class ExerciseEditAdapter(private val workout: Workout): RecyclerView.Adapter<Ex
         holder?.length?.visibility = TextView.VISIBLE
 
         if (exerciseList[position].length == 0L) {
-            holder?.length?.text = "Tap to continue"
-            holder?.length?.visibility = TextView.GONE
+            holder?.length?.text = "No timer"
+//            holder?.length?.visibility = TextView.GONE
+//            holder?.length?.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
         } else {
             holder?.length?.text = exerciseList[position].length.toTimerFormat()
         }
