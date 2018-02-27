@@ -12,7 +12,7 @@
         android:layout_height="@dimen/fab_size_normal"
         android:layout_marginBottom="24dp"
         android:layout_marginEnd="24dp"
-        android:background="@drawable/circle"
+        android:background="@drawable/selector_circle"
         android:elevation="6dp"
         android:foreground="@drawable/ic_add"
         android:foregroundGravity="center"

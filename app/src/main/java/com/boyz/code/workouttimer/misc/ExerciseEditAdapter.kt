@@ -7,13 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.boyz.code.workouttimer.R
-import com.boyz.code.workouttimer.WorkoutEditActivity
-import com.boyz.code.workouttimer.data.Exercise
 import com.boyz.code.workouttimer.data.Workout
-import com.boyz.code.workouttimer.fragment.EditExerciseFragment
+import com.boyz.code.workouttimer.fragment.EditExerciseDialogFragment
 import kotlinx.android.synthetic.main.card_exercise_edit.view.*
 
-class ExerciseEditAdapter(val workout: Workout): RecyclerView.Adapter<ExerciseEditAdapter.ViewHolder>() {
+class ExerciseEditAdapter(private val workout: Workout): RecyclerView.Adapter<ExerciseEditAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
 
@@ -21,8 +19,6 @@ class ExerciseEditAdapter(val workout: Workout): RecyclerView.Adapter<ExerciseEd
 
         holder?.title?.text = exerciseList[position].title
         holder?.length?.visibility = TextView.VISIBLE
-
-//        holder?.itemView?.setOnClickListener(null)
 
         if (exerciseList[position].length == 0L) {
             holder?.length?.text = "Tap to continue"
@@ -38,7 +34,7 @@ class ExerciseEditAdapter(val workout: Workout): RecyclerView.Adapter<ExerciseEd
                 exerciseList.add(position - 1, exercise)
                 notifyDataSetChanged()
 
-                val newWorkout = Workout(workout.title, exerciseList)
+                val newWorkout = Workout(workout.title, exerciseList, workout.description)
                 WorkoutManager.overwriteWorkout(it.context, newWorkout)
             }
         }
@@ -50,39 +46,14 @@ class ExerciseEditAdapter(val workout: Workout): RecyclerView.Adapter<ExerciseEd
                 exerciseList.add(position + 1, exercise)
                 notifyDataSetChanged()
 
-                val newWorkout = Workout(workout.title, exerciseList)
+                val newWorkout = Workout(workout.title, exerciseList, workout.description)
                 WorkoutManager.overwriteWorkout(it.context, newWorkout)
 
             }
         }
 
-//        holder?.optionBtn?.setOnClickListener {
-//            val editExerciseFragment = EditExerciseFragment.create(exerciseList[position].title, exerciseList[position].length.toTimerInputFormat())
-//
-//            editExerciseFragment.show((it.context as Activity).fragmentManager, "BadlaMeLøg")
-//
-//            editExerciseFragment.onConfirmedListener = {exercise ->
-//                exerciseList[position] = exercise
-//                notifyDataSetChanged()
-//
-//                val newWorkout = Workout(workout.title, exerciseList)
-//                WorkoutManager.overwriteWorkout(it.context, newWorkout)
-//            }
-//
-//            editExerciseFragment.onDeleteListener = {
-//                exerciseList.removeAt(position)
-//                notifyDataSetChanged()
-//
-//                val newWorkout = Workout(workout.title, exerciseList)
-//                WorkoutManager.overwriteWorkout(it.context, newWorkout)
-//
-//                editExerciseFragment.dismiss()
-//            }
-//
-//        }
-
         holder?.itemView?.setOnClickListener {
-            val editExerciseFragment = EditExerciseFragment.create(exerciseList[position].title, exerciseList[position].length.toTimerInputFormat())
+            val editExerciseFragment = EditExerciseDialogFragment.create(exerciseList[position].title, exerciseList[position].length.toTimerInputFormat())
 
             editExerciseFragment.show((it.context as Activity).fragmentManager, "BadlaMeLøg")
 
@@ -90,7 +61,7 @@ class ExerciseEditAdapter(val workout: Workout): RecyclerView.Adapter<ExerciseEd
                 exerciseList[position] = exercise
                 notifyDataSetChanged()
 
-                val newWorkout = Workout(workout.title, exerciseList)
+                val newWorkout = Workout(workout.title, exerciseList, workout.description)
                 WorkoutManager.overwriteWorkout(it.context, newWorkout)
             }
 
@@ -98,7 +69,7 @@ class ExerciseEditAdapter(val workout: Workout): RecyclerView.Adapter<ExerciseEd
                 exerciseList.removeAt(position)
                 notifyDataSetChanged()
 
-                val newWorkout = Workout(workout.title, exerciseList)
+                val newWorkout = Workout(workout.title, exerciseList, workout.description)
                 WorkoutManager.overwriteWorkout(it.context, newWorkout)
 
                 editExerciseFragment.dismiss()

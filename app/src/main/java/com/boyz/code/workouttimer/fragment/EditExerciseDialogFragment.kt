@@ -9,9 +9,9 @@ import com.boyz.code.workouttimer.R
 import com.boyz.code.workouttimer.data.Exercise
 import com.boyz.code.workouttimer.misc.setExerciseDialogValidators
 import com.boyz.code.workouttimer.misc.timeInputConverter
-import kotlinx.android.synthetic.main.edit_exercise_dialog.view.*
+import kotlinx.android.synthetic.main.dialog_edit_exercise.view.*
 
-class EditExerciseFragment : DialogFragment() {
+class EditExerciseDialogFragment : DialogFragment() {
 
     var onConfirmedListener: ((Exercise) -> Unit)? = null
     var onDeleteListener: (() -> Unit)? = null
@@ -20,8 +20,8 @@ class EditExerciseFragment : DialogFragment() {
         val ARG_TITLE = "default"
         val ARG_LENGTH = "length"
 
-        fun create(exerciseTitle: String, exerciseLength: String) : EditExerciseFragment {
-            return EditExerciseFragment().apply {
+        fun create(exerciseTitle: String, exerciseLength: String) : EditExerciseDialogFragment {
+            return EditExerciseDialogFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_TITLE, exerciseTitle)
                     putString(ARG_LENGTH, exerciseLength)
@@ -31,7 +31,7 @@ class EditExerciseFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val view = activity.layoutInflater.inflate(R.layout.edit_exercise_dialog, null)
+        val view = activity.layoutInflater.inflate(R.layout.dialog_edit_exercise, null)
         val times = arguments.getString(ARG_LENGTH).split(":")
 
         val exerciseTitleEditInput = view.exerciseTitleEditInput
@@ -50,7 +50,7 @@ class EditExerciseFragment : DialogFragment() {
         }
 
         val alertDialog = AlertDialog.Builder(activity)
-                .setTitle("Edit")
+                .setTitle("Edit exercise")
                 .setView(view)
                 .setPositiveButton("OK") {
                     dialog, which ->

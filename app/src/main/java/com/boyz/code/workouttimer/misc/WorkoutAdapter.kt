@@ -11,7 +11,7 @@ import com.boyz.code.workouttimer.WorkoutActivity
 import com.boyz.code.workouttimer.data.Workout
 import kotlinx.android.synthetic.main.card_workout.view.*
 
-class WorkoutAdapter(val workoutList: ArrayList<Workout>): RecyclerView.Adapter<WorkoutAdapter.ViewHolder>() {
+class WorkoutAdapter(private val workoutList: ArrayList<Workout>): RecyclerView.Adapter<WorkoutAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         holder?.cardWorkoutTitle?.text = workoutList[position].title

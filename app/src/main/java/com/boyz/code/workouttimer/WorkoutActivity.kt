@@ -1,6 +1,8 @@
 package com.boyz.code.workouttimer
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -15,6 +17,7 @@ import com.boyz.code.workouttimer.data.Workout
 import com.boyz.code.workouttimer.misc.*
 import android.support.v7.widget.LinearSmoothScroller
 import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.widget.Button
 
 
@@ -31,14 +34,13 @@ class WorkoutActivity : Activity() {
         setContentView(R.layout.activity_workout)
 
         val title = intent.getStringExtra("title")
-        setTitle("Workout: " + title)
+        setTitle(title)
 
         workout = WorkoutManager.getWorkout(this, title)
 
         recyclerView = findViewById(R.id.recyclerViewExercise)
 
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
-        recyclerView.itemAnimator = NoAnimationItemAnimator()
         recyclerView.adapter = ExerciseAdapter(workout.items)
 
         actionBtn.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -48,7 +50,7 @@ class WorkoutActivity : Activity() {
                     resetBtn.visibility = Button.GONE // hide reset button.
                     scheduler(position = currentProgress.first, progress = currentProgress.second) // resume/start
 
-
+                    actionBar.hide()
                 }
                 else -> {
                     // playing --> pause.
@@ -56,6 +58,10 @@ class WorkoutActivity : Activity() {
                     currentTimer = null
 
                     resetBtn.visibility = Button.VISIBLE // show reset button.
+
+                    if (currentProgress.first == 0 && currentProgress.second == 0L) {
+                        actionBar.show()
+                    }
                 }
             }
         }
@@ -65,6 +71,7 @@ class WorkoutActivity : Activity() {
             currentProgress = Pair(0, 0)
             workoutProgress.visibility = LinearLayout.GONE // hide progress.
             resetBtn.visibility = Button.GONE // hide reset button.
+            actionBar.show()
             true
         }
     }
@@ -90,6 +97,7 @@ class WorkoutActivity : Activity() {
             // clear timer.
             currentTimer = null
             actionBtn.isChecked = false
+            resetBtn.visibility = Button.GONE // hide reset button.
         } else {
             val item = workout.items[position]
 
@@ -102,12 +110,14 @@ class WorkoutActivity : Activity() {
             if (item.length == 0L) {
 
                 workoutProgressStatus.text = "Tap to continue"
+                actionBtn.isEnabled = false
 
                 workoutProgress.setOnClickListener {
-
                     // clear click listener.
                     it.setOnClickListener(null)
                     scheduler(position + 1)
+
+                    actionBtn.isEnabled = true
                 }
 
             } else {
@@ -150,7 +160,7 @@ class WorkoutActivity : Activity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.workout_menu, menu)
+        menuInflater.inflate(R.menu.menu_workout, menu)
         return true
     }
 
@@ -163,6 +173,27 @@ class WorkoutActivity : Activity() {
                 true
             }
             R.id.workoutMenuDelete -> {
+                val inf = LayoutInflater.from(this)
+                val promptsView = inf.inflate(R.layout.dialog_delete_confirmation, null)
+                val alertDialogBuilder = AlertDialog.Builder(this)
+
+                alertDialogBuilder.setTitle("Delete this workout?")
+                alertDialogBuilder.setView(promptsView)
+
+                alertDialogBuilder.setCancelable(false)
+                alertDialogBuilder.setPositiveButton("Delete", { dialogInterface: DialogInterface, i: Int ->
+                    WorkoutManager.deleteWorkout(this, workout.title)
+                    finish()
+                    Toast.makeText(this, "Workout deleted!", Toast.LENGTH_LONG).show()
+                })
+
+                alertDialogBuilder.setNegativeButton(android.R.string.cancel, { dialogInterface: DialogInterface, i: Int ->
+                    // canceled
+                })
+
+                val alertDialog = alertDialogBuilder.create()
+
+                alertDialog.show()
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -6,11 +6,11 @@ import android.app.DialogFragment
 import android.os.Bundle
 
 import com.boyz.code.workouttimer.R
-import kotlinx.android.synthetic.main.fragment_add_workout_dialog.*
+import kotlinx.android.synthetic.main.dialog_add_workout.*
 import android.text.Editable
 import android.text.TextWatcher
 import com.boyz.code.workouttimer.misc.WorkoutManager
-import kotlinx.android.synthetic.main.fragment_add_workout_dialog.view.*
+import kotlinx.android.synthetic.main.dialog_add_workout.view.*
 
 
 class AddWorkoutDialogFragment : DialogFragment() {
@@ -19,17 +19,17 @@ class AddWorkoutDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val view = activity.layoutInflater.inflate(R.layout.fragment_add_workout_dialog, null, false)
+        val view = activity.layoutInflater.inflate(R.layout.dialog_add_workout, null, false)
 
         val dialog = AlertDialog.Builder(activity)
-                .setTitle("New workout")
+                .setTitle("Add workout")
                 .setView(view)
-                .setPositiveButton("Create workout") { dialog, which ->
+                .setPositiveButton("Add workout") { dialog, which ->
                     if (onConfirmedListener != null) {
                         onConfirmedListener!!(view.addWorkoutDialogNameInput.text.toString(), view.addWorkoutDialogDescriptionInput.text.toString())
                     }
                 }
-                .setNegativeButton("Discard") { dialog, which ->
+                .setNegativeButton(android.R.string.cancel) { dialog, which ->
                     dialog.dismiss()
                 }
                 .create()
