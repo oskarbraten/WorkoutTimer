@@ -49,8 +49,14 @@ class AddExerciseDialogFragment : DialogFragment() {
                 }
 
         setExerciseDialogValidators(exerciseTitleInput, includeTimerSwitcher, minutesInput, secondsInput, durationWrapper, alertDialog)
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+//        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
 
         return alertDialog
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val dialog: AlertDialog = dialog as AlertDialog
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
     }
 }

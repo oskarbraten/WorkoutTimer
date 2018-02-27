@@ -36,61 +36,16 @@ class WorkoutEditActivity : Activity() {
         recyclerView.adapter = ExerciseEditAdapter(workout)
 
         addExerciseButton.setOnClickListener {
-            val inf = LayoutInflater.from(this)
-            val promptsView = inf.inflate(R.layout.dialog_add_exercise, null)
-            val alertDialogBuilder = AlertDialog.Builder(this)
+            val addExerciseDialogFragment = AddExerciseDialogFragment()
 
+            addExerciseDialogFragment.show((it.context as Activity).fragmentManager, "BadlaMeLøg")
 
-            alertDialogBuilder.setTitle("Add exercise")
-            alertDialogBuilder.setView(promptsView)
+            addExerciseDialogFragment.onConfirmedListener = { exercise ->
+                workout.items.add(exercise)
+                val newWorkout = Workout(workout.title, workout.items, workout.description)
 
-            val exerciseTitleInput = promptsView.exerciseTitleInput
-            val minutesInput = promptsView.minutesInput
-            val secondsInput = promptsView.secondsInput
-            val includeTimerSwitcher = promptsView.includeTimerSwitcher
-            val durationWrapper = promptsView.durationWrapper
-
-            alertDialogBuilder.setCancelable(false)
-
-            alertDialogBuilder.setPositiveButton("OK", { dialogInterface: DialogInterface, i: Int ->
-                if (exerciseTitleInput.equals("")) {
-                    Toast.makeText(this, "jaja, sånn kan det gå", Toast.LENGTH_LONG).show()
-                } else {
-                    val length = when (promptsView.includeTimerSwitcher.isChecked) {
-                        false -> 0
-                        else -> timeInputConverter(minutesInput.text.toString().toInt(), secondsInput.text.toString().toInt())
-                    }
-                    val exercise = Exercise(exerciseTitleInput.text.toString(), length)
-
-                    workout.items.add(exercise)
-                    val newWorkout = Workout(workout.title, workout.items, workout.description)
-
-                    WorkoutManager.overwriteWorkout(this, newWorkout)
-                }
-            })
-
-            alertDialogBuilder.setNegativeButton("Cancel", { dialogInterface: DialogInterface, i: Int ->
-                Toast.makeText(this, "jaja, sånn kan det gå", Toast.LENGTH_LONG).show()
-            })
-
-            val alertDialog = alertDialogBuilder.create()
-
-            alertDialog.show()
-            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = false
-
-            setExerciseDialogValidators(exerciseTitleInput, includeTimerSwitcher, minutesInput, secondsInput, durationWrapper, alertDialog)
-
-//            val addExerciseDialogFragment = AddExerciseDialogFragment()
-//
-//            addExerciseDialogFragment.show((it.context as Activity).fragmentManager, "BadlaMeLøg")
-//
-//            addExerciseDialogFragment.onConfirmedListener = { exercise ->
-//                workout.items.add(exercise)
-//                val newWorkout = Workout(workout.title, workout.items, workout.description)
-//
-//                WorkoutManager.overwriteWorkout(this, newWorkout)
-//            }
-
+                WorkoutManager.overwriteWorkout(this, newWorkout)
+            }
         }
     }
 
