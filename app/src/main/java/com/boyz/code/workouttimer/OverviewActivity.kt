@@ -21,9 +21,9 @@ class OverviewActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_overview)
 
-        workouts = ArrayList(WorkoutManager.getWorkouts(this))
+        workouts = ArrayList(WorkoutManager.getWorkouts(this).sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.title }))
 
-        recyclerView = findViewById<RecyclerView>(R.id.recyclerViewWorkout)
+        recyclerView = findViewById(R.id.recyclerViewWorkout)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         recyclerView.adapter = WorkoutAdapter(workouts)
 
@@ -42,6 +42,8 @@ class OverviewActivity : Activity() {
 
                 workouts.add(workout)
 
+                workouts.sortWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.title })
+
                 WorkoutManager.addWorkout(this@OverviewActivity, workout)
 
                 recyclerView.adapter.notifyDataSetChanged()
@@ -53,7 +55,7 @@ class OverviewActivity : Activity() {
         super.onResume()
 
         workouts.clear()
-        workouts.addAll(ArrayList(WorkoutManager.getWorkouts(this)))
+        workouts.addAll(ArrayList(WorkoutManager.getWorkouts(this).sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.title })))
         recyclerView.adapter.notifyDataSetChanged()
     }
 }

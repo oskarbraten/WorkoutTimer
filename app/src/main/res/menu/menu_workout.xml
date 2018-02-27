@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/workoutMenuEdit"
-        android:title="Edit" />
+        android:id="@+id/workoutMenuAdd"
+        android:title="Add exercise" />
     <item
         android:id="@+id/workoutMenuDelete"
         android:title="Delete" />

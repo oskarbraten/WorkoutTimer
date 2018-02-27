@@ -3,7 +3,6 @@ package com.boyz.code.workouttimer
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -22,9 +21,16 @@ import android.view.LayoutInflater
 import android.widget.Button
 import android.media.AudioAttributes
 import android.net.Uri
+import android.support.v7.widget.helper.ItemTouchHelper
+import com.boyz.code.workouttimer.fragment.AddExerciseDialogFragment
+import com.boyz.code.workouttimer.fragment.EditExerciseDialogFragment
+import java.util.*
 
 
 class WorkoutActivity : Activity() {
+
+    private val STATE_POSITION = "POSITION"
+    private val STATE_PROGRESS = "PROGRESS"
 
     private lateinit var workout: Workout
     private lateinit var recyclerView: RecyclerView
@@ -40,12 +46,75 @@ class WorkoutActivity : Activity() {
         val title = intent.getStringExtra("title")
         setTitle(title)
 
+        // load saved position and progress.
+        if (savedInstanceState != null) {
+            val position = savedInstanceState.getInt(STATE_POSITION)
+            val progress = savedInstanceState.getLong(STATE_PROGRESS)
+
+            currentProgress = Pair(position, progress)
+
+            actionBtn.isEnabled = true
+        }
+
         workout = WorkoutManager.getWorkout(this, title)
 
         recyclerView = findViewById(R.id.recyclerViewExercise)
 
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
-        recyclerView.adapter = ExerciseAdapter(workout.items)
+        recyclerView.adapter = ExerciseAdapter(workout)
+
+        // add edit dialog.
+        (recyclerView.adapter as ExerciseAdapter).setOnItemClickListener { _, position ->
+            if (currentTimer == null) {
+                val exercise = workout.items[position]
+
+                val editExerciseFragment = EditExerciseDialogFragment.create(exercise.title, exercise.length.toTimerInputFormat())
+
+                editExerciseFragment.show(fragmentManager, "EditExerciseDialog")
+
+                editExerciseFragment.onConfirmedListener = { exercise ->
+                    workout.items[position] = exercise
+                    recyclerView.adapter.notifyDataSetChanged()
+
+                    WorkoutManager.overwriteWorkout(this, workout)
+                }
+
+                editExerciseFragment.onDeleteListener = {
+                    workout.items.removeAt(position)
+                    recyclerView.adapter.notifyDataSetChanged()
+
+                    WorkoutManager.overwriteWorkout(this, workout)
+
+                    editExerciseFragment.dismiss()
+                }
+            }
+        }
+
+        // enable drag and drop reordering.
+        ItemTouchHelper(object : ItemTouchHelper.Callback() {
+
+            override fun onMove(recyclerView: RecyclerView, from: RecyclerView.ViewHolder, to: RecyclerView.ViewHolder) : Boolean {
+                if (currentTimer == null) {
+                    Collections.swap(workout.items, from.adapterPosition, to.adapterPosition)
+
+                    val newWorkout = Workout(workout.title, workout.items, workout.description)
+                    WorkoutManager.overwriteWorkout(this@WorkoutActivity, newWorkout)
+
+                    recyclerView.adapter.notifyItemMoved(from.adapterPosition, to.adapterPosition)
+                }
+                return true
+            }
+
+            override fun onSwiped(viewHolder:RecyclerView.ViewHolder, direction:Int) {
+                //TODO: Add delete with swipe?
+            }
+
+            //defines the enabled move directions in each state (idle, swiping, dragging).
+            override fun getMovementFlags(recyclerView:RecyclerView, viewHolder:RecyclerView.ViewHolder):Int {
+                return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.DOWN or ItemTouchHelper.UP) //  or ItemTouchHelper.START or ItemTouchHelper.END
+            }
+
+        }).apply { attachToRecyclerView(recyclerView) }
 
         // initialize media player.
         Thread({
@@ -137,7 +206,28 @@ class WorkoutActivity : Activity() {
             // set title.
             workoutProgressTitle.text = item.title
 
+            // finally if there is a next item scroll to it.
+            if (position + 1 <= workout.items.size) {
+                // scroll to item if the view is scrollable
+                val smoothScroller = object : LinearSmoothScroller(recyclerView.context) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return LinearSmoothScroller.SNAP_TO_START
+                    }
+
+                    override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
+                        return super.calculateSpeedPerPixel(displayMetrics) * 3
+                    }
+                }
+
+                smoothScroller.targetPosition = position + 1
+
+                (recyclerView.layoutManager as LinearLayoutManager).startSmoothScroll(smoothScroller)
+            }
+
             if (item.length == 0L) {
+
+                currentTimer?.cancel()
+                currentTimer = null
 
                 workoutProgressStatus.text = "Tap to continue"
                 actionBtn.isEnabled = false
@@ -145,9 +235,9 @@ class WorkoutActivity : Activity() {
                 workoutProgress.setOnClickListener {
                     // clear click listener.
                     it.setOnClickListener(null)
-                    scheduler(position + 1)
-
                     actionBtn.isEnabled = true
+
+                    scheduler(position + 1)
                 }
 
             } else {
@@ -179,24 +269,22 @@ class WorkoutActivity : Activity() {
                 }.start()
             }
 
-            // finally if there is a next item scroll to it.
-            val scrollable = recyclerView.computeVerticalScrollRange() > recyclerView.height
-            if (scrollable && position + 1 >= workout.items.size) {
-                // scroll to item if the view is scrollable
-                val smoothScroller = object : LinearSmoothScroller(recyclerView.context) {
-                    override fun getVerticalSnapPreference(): Int {
-                        return LinearSmoothScroller.SNAP_TO_START
-                    }
 
-                    override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
-                        return super.calculateSpeedPerPixel(displayMetrics) * 3
-                    }
-                }
-                smoothScroller.targetPosition = position
-
-                (recyclerView.layoutManager as LinearLayoutManager).startSmoothScroll(smoothScroller)
-            }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        currentTimer?.cancel()
+        currentTimer = null
+    }
+
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        savedInstanceState.putInt(STATE_POSITION, currentProgress.first)
+        savedInstanceState.putLong(STATE_PROGRESS, currentProgress.second)
+
+        super.onSaveInstanceState(savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -206,10 +294,19 @@ class WorkoutActivity : Activity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item!!.itemId) {
-            R.id.workoutMenuEdit -> {
-                val intent = Intent(this, WorkoutEditActivity::class.java)
-                intent.putExtra("title", workout.title)
-                startActivity(intent)
+            R.id.workoutMenuAdd -> {
+                val addExerciseDialogFragment = AddExerciseDialogFragment()
+
+                addExerciseDialogFragment.show(fragmentManager, "AddExerciseDialog")
+
+                addExerciseDialogFragment.onConfirmedListener = { exercise ->
+
+                    workout.items.add(exercise)
+
+                    val newWorkout = Workout(workout.title, workout.items, workout.description)
+
+                    WorkoutManager.overwriteWorkout(this, newWorkout)
+                }
                 true
             }
             R.id.workoutMenuDelete -> {

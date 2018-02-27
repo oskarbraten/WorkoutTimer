@@ -6,13 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.boyz.code.workouttimer.R
-import com.boyz.code.workouttimer.data.Exercise
+import com.boyz.code.workouttimer.data.Workout
 import kotlinx.android.synthetic.main.card_exercise.view.*
 
-class ExerciseAdapter(private val exercises: ArrayList<Exercise>) : RecyclerView.Adapter<ExerciseAdapter.ViewHolder>() {
+class ExerciseAdapter(private val workout: Workout) : RecyclerView.Adapter<ExerciseAdapter.ViewHolder>() {
+
+    private var onItemClickListener: ((view: View, position: Int) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: ((view: View, position: Int) -> Unit)) {
+        onItemClickListener = listener
+    }
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        val exercise = exercises[position]
+        var exercise = workout.items[position]
 
         holder?.title?.text = exercise.title
 
@@ -30,6 +36,10 @@ class ExerciseAdapter(private val exercises: ArrayList<Exercise>) : RecyclerView
                 holder?.status?.text = (exercise.length - exercise.progress).toTimerFormat()
             }
         }
+
+        holder?.itemView?.setOnClickListener {
+            onItemClickListener?.invoke(it, position)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
@@ -38,11 +48,11 @@ class ExerciseAdapter(private val exercises: ArrayList<Exercise>) : RecyclerView
     }
 
     override fun getItemCount(): Int {
-        return exercises.size
+        return workout.items.size
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val title = itemView.exerciseCardTitle!! //itemView.findViewById(R.id.exerciseCardTitle)
+        val title = itemView.exerciseCardTitle!!
         val status = itemView.exerciseCardStatus!!
     }
 
