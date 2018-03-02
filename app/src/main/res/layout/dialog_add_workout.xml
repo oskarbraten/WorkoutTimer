@@ -5,62 +5,45 @@
     android:layout_height="wrap_content"
     tools:context="com.boyz.code.workouttimer.fragment.AddWorkoutDialogFragment">
 
-    <TextView
-        android:id="@+id/addWorkoutDialogNameLabel"
-        android:layout_width="wrap_content"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:text="Name:"
-        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/addWorkoutDialogNameInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
-        android:ems="10"
-        android:hint="Name"
-        android:inputType="textCapWords"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addWorkoutDialogNameLabel" />
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/addWorkoutDialogNameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name *"
+            android:inputType="textCapWords" />
 
-    <TextView
-        android:id="@+id/addWorkoutDialogDescriptionLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:text="Enter description:"
-        android:textAppearance="@android:style/TextAppearance.Material.Medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addWorkoutDialogNameInput" />
+    </android.support.design.widget.TextInputLayout>
 
-    <EditText
-        android:id="@+id/addWorkoutDialogDescriptionInput"
-        android:layout_width="0dp"
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
-        android:ems="10"
-        android:hint="Description (optional)"
-        android:inputType="textMultiLine|textCapSentences"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addWorkoutDialogDescriptionLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/addWorkoutDialogDescriptionInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description (optional)"
+            android:inputType="textCapSentences|textMultiLine" />
+
+    </android.support.design.widget.TextInputLayout>
 
 </android.support.constraint.ConstraintLayout>

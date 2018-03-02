@@ -6,19 +6,16 @@
     android:layout_height="match_parent"
     tools:context="com.boyz.code.workouttimer.OverviewActivity">
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/addWorkoutBtn"
-        android:layout_width="@dimen/fab_size_normal"
-        android:layout_height="@dimen/fab_size_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:layout_marginBottom="24dp"
         android:layout_marginEnd="24dp"
-        android:background="@drawable/selector_circle"
-        android:elevation="6dp"
-        android:foreground="@drawable/ic_add"
-        android:foregroundGravity="center"
-        android:stateListAnimator="@drawable/floating_action_button_animator"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_add" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewWorkout"

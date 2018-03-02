@@ -4,42 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.boyz.code.workouttimer.WorkoutActivity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:keepScreenOn="true">
-
-    <LinearLayout
-        android:id="@+id/workoutProgress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:orientation="vertical"
-        android:padding="36dp"
-        android:paddingEnd="8dp"
-        android:paddingStart="8dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/workoutProgressTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Title"
-            android:textAlignment="center"
-            android:textSize="32dp"
-            android:textAppearance="@android:style/TextAppearance.Material.Medium" />
-
-        <TextView
-            android:id="@+id/workoutProgressStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Status"
-            android:textAlignment="center"
-            android:textSize="76dp"
-            android:textAppearance="@android:style/TextAppearance.Material.Large" />
-
-    </LinearLayout>
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewExercise"
@@ -52,38 +17,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/workoutProgress">
+        app:layout_constraintTop_toTopOf="parent">
 
     </android.support.v7.widget.RecyclerView>
 
-    <ToggleButton
-        android:id="@+id/actionBtn"
-        android:layout_width="@dimen/fab_size_normal"
-        android:layout_height="@dimen/fab_size_normal"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/selector_circle"
-        android:checked="false"
-        android:elevation="6dp"
-        android:foreground="@drawable/selector_toggle_play"
-        android:foregroundGravity="center"
-        android:stateListAnimator="@drawable/floating_action_button_animator"
-        android:textOff=""
-        android:textOn=""
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/resetBtn"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/playBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:layout_marginBottom="24dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Hold to reset"
-        android:visibility="gone"
+        android:layout_marginEnd="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:srcCompat="@drawable/ic_play" />
 
 </android.support.constraint.ConstraintLayout>

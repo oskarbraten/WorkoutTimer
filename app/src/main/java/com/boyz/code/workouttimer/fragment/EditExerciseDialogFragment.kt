@@ -52,8 +52,7 @@ class EditExerciseDialogFragment : DialogFragment() {
         val alertDialog = AlertDialog.Builder(activity)
                 .setTitle("Edit exercise")
                 .setView(view)
-                .setPositiveButton("OK") {
-                    dialog, which ->
+                .setPositiveButton("OK") { _, _ ->
                     val length = when (includeTimerEditSwitcher.isChecked) {
                         false -> 0
                         else -> timeInputConverter(minutesEditInput.text.toString().toInt(), secondsEditInput.text.toString().toInt())
@@ -65,10 +64,7 @@ class EditExerciseDialogFragment : DialogFragment() {
                         onConfirmedListener!!(exercise)
                     }
                 }
-                .setNegativeButton("Cancel") {
-                    dialog, which ->
-                    Log.d("hmm", "jaja")
-                }
+                .setNegativeButton("Cancel") { _, _ -> }
                 .create()
                 .apply {
                     setCanceledOnTouchOutside(false)

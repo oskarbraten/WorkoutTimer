@@ -1,9 +1,8 @@
 package com.boyz.code.workouttimer
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.media.MediaPlayer
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -11,33 +10,22 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.activity_workout.*
-import android.os.CountDownTimer
 import android.widget.Toast
 import com.boyz.code.workouttimer.data.Workout
 import com.boyz.code.workouttimer.misc.*
-import android.support.v7.widget.LinearSmoothScroller
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
-import android.widget.Button
-import android.media.AudioAttributes
-import android.net.Uri
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.helper.ItemTouchHelper
 import com.boyz.code.workouttimer.fragment.AddExerciseDialogFragment
 import com.boyz.code.workouttimer.fragment.EditExerciseDialogFragment
+import kotlinx.android.synthetic.main.card_workout.view.*
 import java.util.*
 
 
-class WorkoutActivity : Activity() {
-
-    private val STATE_POSITION = "POSITION"
-    private val STATE_PROGRESS = "PROGRESS"
+class WorkoutActivity : AppCompatActivity() {
 
     private lateinit var workout: Workout
     private lateinit var recyclerView: RecyclerView
-    private var sounds: Pair<MediaPlayer, MediaPlayer>? = null
-
-    private var currentTimer: CountDownTimer? = null
-    private var currentProgress: Pair<Int, Long> = Pair(0, 0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,16 +33,6 @@ class WorkoutActivity : Activity() {
 
         val title = intent.getStringExtra("title")
         setTitle(title)
-
-        // load saved position and progress.
-        if (savedInstanceState != null) {
-            val position = savedInstanceState.getInt(STATE_POSITION)
-            val progress = savedInstanceState.getLong(STATE_PROGRESS)
-
-            currentProgress = Pair(position, progress)
-
-            actionBtn.isEnabled = true
-        }
 
         workout = WorkoutManager.getWorkout(this, title)
 
@@ -65,28 +43,26 @@ class WorkoutActivity : Activity() {
 
         // add edit dialog.
         (recyclerView.adapter as ExerciseAdapter).setOnItemClickListener { _, position ->
-            if (currentTimer == null) {
-                val exercise = workout.items[position]
+            val exercise = workout.items[position]
 
-                val editExerciseFragment = EditExerciseDialogFragment.create(exercise.title, exercise.length.toTimerInputFormat())
+            val editExerciseFragment = EditExerciseDialogFragment.create(exercise.title, exercise.length.toTimerInputFormat())
 
-                editExerciseFragment.show(fragmentManager, "EditExerciseDialog")
+            editExerciseFragment.show(fragmentManager, "EditExerciseDialog")
 
-                editExerciseFragment.onConfirmedListener = { exercise ->
-                    workout.items[position] = exercise
-                    recyclerView.adapter.notifyDataSetChanged()
+            editExerciseFragment.onConfirmedListener = { exercise ->
+                workout.items[position] = exercise
+                recyclerView.adapter.notifyDataSetChanged()
 
-                    WorkoutManager.overwriteWorkout(this, workout)
-                }
+                WorkoutManager.overwriteWorkout(this, workout)
+            }
 
-                editExerciseFragment.onDeleteListener = {
-                    workout.items.removeAt(position)
-                    recyclerView.adapter.notifyDataSetChanged()
+            editExerciseFragment.onDeleteListener = {
+                workout.items.removeAt(position)
+                recyclerView.adapter.notifyDataSetChanged()
 
-                    WorkoutManager.overwriteWorkout(this, workout)
+                WorkoutManager.overwriteWorkout(this, workout)
 
-                    editExerciseFragment.dismiss()
-                }
+                editExerciseFragment.dismiss()
             }
         }
 
@@ -94,14 +70,12 @@ class WorkoutActivity : Activity() {
         ItemTouchHelper(object : ItemTouchHelper.Callback() {
 
             override fun onMove(recyclerView: RecyclerView, from: RecyclerView.ViewHolder, to: RecyclerView.ViewHolder) : Boolean {
-                if (currentTimer == null) {
-                    Collections.swap(workout.items, from.adapterPosition, to.adapterPosition)
+                Collections.swap(workout.items, from.adapterPosition, to.adapterPosition)
 
-                    val newWorkout = Workout(workout.title, workout.items, workout.description)
-                    WorkoutManager.overwriteWorkout(this@WorkoutActivity, newWorkout)
+                val newWorkout = Workout(workout.title, workout.items, workout.description)
+                WorkoutManager.overwriteWorkout(this@WorkoutActivity, newWorkout)
 
-                    recyclerView.adapter.notifyItemMoved(from.adapterPosition, to.adapterPosition)
-                }
+                recyclerView.adapter.notifyItemMoved(from.adapterPosition, to.adapterPosition)
                 return true
             }
 
@@ -116,62 +90,11 @@ class WorkoutActivity : Activity() {
 
         }).apply { attachToRecyclerView(recyclerView) }
 
-        // initialize media player.
-        Thread({
-            val shortBeep = MediaPlayer()
-            shortBeep.setAudioAttributes(AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build())
+        playBtn.setOnClickListener {
+            val intent = Intent(this, TimerActivity::class.java)
+            intent.putExtra("title", workout.title)
 
-            shortBeep.setDataSource(this, Uri.parse("android.resource://com.boyz.code.workouttimer/" + R.raw.beep))
-
-            shortBeep.setVolume(0.25f, 0.25f)
-            shortBeep.prepare()
-
-            val longBeep = MediaPlayer()
-            longBeep.setAudioAttributes(AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build())
-
-            longBeep.setDataSource(this, Uri.parse("android.resource://com.boyz.code.workouttimer/" + R.raw.beep_long))
-            longBeep.setVolume(0.35f, 0.35f)
-            longBeep.prepare()
-
-            sounds = Pair(shortBeep, longBeep)
-        }).run()
-
-        actionBtn.setOnCheckedChangeListener { buttonView, isChecked ->
-            when (isChecked) {
-                true -> {
-                    workoutProgress.visibility = LinearLayout.VISIBLE
-                    resetBtn.visibility = Button.GONE // hide reset button.
-                    scheduler(position = currentProgress.first, progress = currentProgress.second) // resume/start
-
-                    actionBar.hide()
-                }
-                else -> {
-                    // playing --> pause.
-                    currentTimer?.cancel()
-                    currentTimer = null
-
-                    resetBtn.visibility = Button.VISIBLE // show reset button.
-
-                    if (currentProgress.first == 0 && currentProgress.second == 0L) {
-                        actionBar.show()
-                    }
-                }
-            }
-        }
-
-        resetBtn.setOnLongClickListener {
-            // reset progress.
-            currentProgress = Pair(0, 0)
-            workoutProgress.visibility = LinearLayout.GONE // hide progress.
-            resetBtn.visibility = Button.GONE // hide reset button.
-            actionBar.show()
-            true
+            startActivity(intent)
         }
     }
 
@@ -184,107 +107,6 @@ class WorkoutActivity : Activity() {
 
         // update view.
         recyclerView.adapter.notifyDataSetChanged()
-    }
-
-    private fun scheduler(position: Int, progress: Long = 0) {
-
-        if (position >= workout.items.size) {
-            Toast.makeText(this, "Workout complete!", Toast.LENGTH_SHORT).show()
-            workoutProgress.visibility = LinearLayout.GONE
-            currentProgress = Pair(0, 0)
-
-            // clear timer.
-            currentTimer = null
-            actionBtn.isChecked = false
-            resetBtn.visibility = Button.GONE // hide reset button.
-        } else {
-            val item = workout.items[position]
-
-            // save progress.
-            currentProgress = Pair(position, progress)
-
-            // set title.
-            workoutProgressTitle.text = item.title
-
-            // finally if there is a next item scroll to it.
-            if (position + 1 <= workout.items.size) {
-                // scroll to item if the view is scrollable
-                val smoothScroller = object : LinearSmoothScroller(recyclerView.context) {
-                    override fun getVerticalSnapPreference(): Int {
-                        return LinearSmoothScroller.SNAP_TO_START
-                    }
-
-                    override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
-                        return super.calculateSpeedPerPixel(displayMetrics) * 3
-                    }
-                }
-
-                smoothScroller.targetPosition = position + 1
-
-                (recyclerView.layoutManager as LinearLayoutManager).startSmoothScroll(smoothScroller)
-            }
-
-            if (item.length == 0L) {
-
-                currentTimer?.cancel()
-                currentTimer = null
-
-                workoutProgressStatus.text = "Tap to continue"
-                actionBtn.isEnabled = false
-
-                workoutProgress.setOnClickListener {
-                    // clear click listener.
-                    it.setOnClickListener(null)
-                    actionBtn.isEnabled = true
-
-                    scheduler(position + 1)
-                }
-
-            } else {
-                workoutProgressStatus.text = (item.length - progress).toTimerFormat()
-
-                currentTimer = object : CountDownTimer((item.length - progress), 250) {
-
-                    override fun onTick(millisUntilFinished: Long) {
-
-                        // on the last 3 seconds play beep.
-                        if (currentProgress.second >= (item.length - 4000L) && currentProgress.second % 1000L == 0L) {
-                            if (currentProgress.second < (item.length - 1000L)) {
-                                sounds?.first?.start()
-                            } else {
-                                sounds?.second?.start()
-                            }
-                        }
-
-                        // increment progress by 250 ms.
-                        currentProgress = Pair(position, currentProgress.second + 250)
-                        workoutProgressStatus.text = (item.length - currentProgress.second).toTimerFormat()
-                    }
-
-                    override fun onFinish() {
-
-                        // execute next timer/exercise.
-                        scheduler(position + 1)
-                    }
-                }.start()
-            }
-
-
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        currentTimer?.cancel()
-        currentTimer = null
-    }
-
-    override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        savedInstanceState.putInt(STATE_POSITION, currentProgress.first)
-        savedInstanceState.putLong(STATE_PROGRESS, currentProgress.second)
-
-        super.onSaveInstanceState(savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -324,7 +146,7 @@ class WorkoutActivity : Activity() {
                     Toast.makeText(this, "Workout deleted!", Toast.LENGTH_LONG).show()
                 })
 
-                alertDialogBuilder.setNegativeButton(android.R.string.cancel, { dialogInterface: DialogInterface, i: Int ->
+                alertDialogBuilder.setNegativeButton(android.R.string.cancel, { _, _: Int ->
                     // canceled
                 })
 

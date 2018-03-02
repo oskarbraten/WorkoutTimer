@@ -1,7 +1,7 @@
 package com.boyz.code.workouttimer
 
-import android.app.Activity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
@@ -12,7 +12,7 @@ import com.boyz.code.workouttimer.fragment.AddWorkoutDialogFragment
 import com.boyz.code.workouttimer.misc.WorkoutManager
 import kotlinx.android.synthetic.main.activity_overview.*
 
-class OverviewActivity : Activity() {
+class OverviewActivity : AppCompatActivity() {
 
     private lateinit var workouts: ArrayList<Workout>
     private lateinit var recyclerView: RecyclerView

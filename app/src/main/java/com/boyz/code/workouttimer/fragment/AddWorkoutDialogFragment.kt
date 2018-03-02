@@ -26,6 +26,7 @@ class AddWorkoutDialogFragment : DialogFragment() {
                 .setView(view)
                 .setPositiveButton("Add workout") { dialog, which ->
                     if (onConfirmedListener != null) {
+                        view.addWorkoutDialogDescriptionInput.text
                         onConfirmedListener!!(view.addWorkoutDialogNameInput.text.toString(), view.addWorkoutDialogDescriptionInput.text.toString())
                     }
                 }
