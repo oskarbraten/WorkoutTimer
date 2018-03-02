@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
-import android.util.Log
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -20,11 +19,14 @@ import com.boyz.code.workouttimer.misc.WorkoutManager
 import com.boyz.code.workouttimer.misc.toTimerFormat
 import kotlinx.android.synthetic.main.activity_timer.*
 
-const val TIMER_STATE_POSITION = "POSITION"
-const val TIMER_STATE_PROGRESS = "PROGRESS"
-const val TIMER_STATE_PLAYING = "PLAYING"
-
 class TimerActivity : AppCompatActivity() {
+
+    // static constants
+    companion object {
+        const val TIMER_STATE_POSITION = "POSITION"
+        const val TIMER_STATE_PROGRESS = "PROGRESS"
+        const val TIMER_STATE_PLAYING = "PLAYING"
+    }
 
     private lateinit var workout: Workout
     private lateinit var recyclerView: RecyclerView
