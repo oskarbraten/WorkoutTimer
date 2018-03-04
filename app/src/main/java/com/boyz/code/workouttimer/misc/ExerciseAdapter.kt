@@ -29,11 +29,8 @@ class ExerciseAdapter(private val workout: Workout) : RecyclerView.Adapter<Exerc
             exercise.length == 0L -> {// hide status on exercises that are not timed.
                 holder?.status?.visibility = TextView.GONE
             }
-            exercise.progress == 0L -> {
-                holder?.status?.text = exercise.length.toTimerFormat()
-            }
             else -> {
-                holder?.status?.text = (exercise.length - exercise.progress).toTimerFormat()
+                holder?.status?.text = exercise.length.toTimerFormat()
             }
         }
 

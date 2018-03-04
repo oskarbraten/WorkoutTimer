@@ -25,7 +25,7 @@
             android:id="@+id/workoutProgressTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Title"
+            android:text=""
             android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             android:textSize="32dp" />
@@ -34,7 +34,7 @@
             android:id="@+id/workoutProgressStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Status"
+            android:text=""
             android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.Material.Large"
             android:textSize="76dp" />

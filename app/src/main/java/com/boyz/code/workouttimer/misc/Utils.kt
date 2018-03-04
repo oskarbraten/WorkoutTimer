@@ -134,6 +134,8 @@ object WorkoutManager {
     }
 
     fun getWorkout(context: Context, title: String) : Workout {
+        // TODO: handle no workout with that title.
+
         val prefs = context.getSharedPreferences("data", Context.MODE_PRIVATE)
         val gson = Gson()
         val json = prefs.getString(title, "{message:'No json'}")
