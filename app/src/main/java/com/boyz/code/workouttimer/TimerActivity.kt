@@ -137,8 +137,8 @@ class TimerActivity : AppCompatActivity() {
 
             }
 
-            timerService.setOnWorkoutStopped { completed ->
-                if (completed) {
+            timerService.setOnWorkoutStopped { completed, isBound ->
+                if (completed && isBound) {
                     Toast.makeText(this@TimerActivity, "Workout complete!", Toast.LENGTH_SHORT).show()
                 }
                 finish()
@@ -166,7 +166,10 @@ class TimerActivity : AppCompatActivity() {
         intent.getStringExtra("title")?.also { title ->
             WorkoutManager.getWorkout(this, title).items[0].also {
                 workoutProgressTitle.text = it.title
-                workoutProgressStatus.text = it.length.toTimerFormat()
+                workoutProgressStatus.text = when (it.length) {
+                    0L -> "Tap to continue"
+                    else -> it.length.toTimerFormat()
+                }
             }
         }
 
@@ -213,7 +216,6 @@ class TimerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-
         if (isBound) {
             unbindService(serviceConnection)
             isBound = false
