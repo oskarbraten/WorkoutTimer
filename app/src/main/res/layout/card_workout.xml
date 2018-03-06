@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
@@ -12,7 +11,7 @@
         android:padding="12dp">
 
         <TextView
-            android:id="@+id/cardWorkoutTitle"
+            android:id="@+id/workoutCardTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Title"
@@ -31,21 +30,21 @@
             android:textAppearance="@android:style/TextAppearance.Material.Small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/cardWorkoutTime"
-            app:layout_constraintTop_toBottomOf="@+id/cardWorkoutTitle" />
+            app:layout_constraintStart_toEndOf="@+id/workoutCardTime"
+            app:layout_constraintTop_toBottomOf="@+id/workoutCardTitle" />
 
         <TextView
-            android:id="@+id/cardWorkoutTime"
+            android:id="@+id/workoutCardTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Time"
             android:textAppearance="@android:style/TextAppearance.Material.Small"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardWorkoutTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/workoutCardTitle" />
 
         <TextView
-            android:id="@+id/cardWorkoutDescription"
+            android:id="@+id/workoutCardDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

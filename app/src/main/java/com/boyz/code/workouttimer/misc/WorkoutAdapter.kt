@@ -1,36 +1,41 @@
 package com.boyz.code.workouttimer.misc
 
-import android.content.Intent
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.boyz.code.workouttimer.R
-import com.boyz.code.workouttimer.WorkoutActivity
 import com.boyz.code.workouttimer.data.Workout
 import kotlinx.android.synthetic.main.card_workout.view.*
 
 class WorkoutAdapter(private val workouts: ArrayList<Workout>): RecyclerView.Adapter<WorkoutAdapter.ViewHolder>() {
 
+    private var onItemClickListener: ((view: View, position: Int) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: ((view: View, position: Int) -> Unit)) {
+        onItemClickListener = listener
+    }
+
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
 
         val workout = workouts[position]
 
-        holder?.cardWorkoutTitle?.text = workout.title
-        holder?.cardWorkoutTime?.text = workout.length().toTimerLongFormat()
+        holder?.title?.text = workout.title
+        holder?.time?.text = workout.length().toTimerLongFormat()
 
         // reset visibility on every bind.
-        holder?.cardWorkoutDescription?.visibility = CardView.GONE
+        holder?.description?.visibility = CardView.GONE
 
         if (workout.description != "") {
-            holder?.cardWorkoutDescription?.text = workout.description
-            holder?.cardWorkoutDescription?.visibility = CardView.VISIBLE
+            holder?.description?.text = workout.description
+            holder?.description?.visibility = CardView.VISIBLE
         }
 
 
-        holder?.addListener()
+        holder?.itemView?.setOnClickListener {
+            onItemClickListener?.invoke(it, position)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
@@ -43,17 +48,8 @@ class WorkoutAdapter(private val workouts: ArrayList<Workout>): RecyclerView.Ada
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        val cardWorkoutTitle = itemView.cardWorkoutTitle!!
-        val cardWorkoutTime = itemView.cardWorkoutTime!!
-        val cardWorkoutDescription = itemView.cardWorkoutDescription!!
-
-        fun addListener() {
-            itemView.setOnClickListener {
-                val intent = Intent(itemView.context, WorkoutActivity::class.java)
-                intent.putExtra("title", itemView.cardWorkoutTitle.text.toString())
-                itemView.context.startActivity(intent)
-            }
-        }
+        val title = itemView.workoutCardTitle!!
+        val time = itemView.workoutCardTime!!
+        val description = itemView.workoutCardDescription!!
     }
-
 }

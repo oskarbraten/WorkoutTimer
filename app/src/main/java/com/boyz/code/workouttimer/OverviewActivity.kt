@@ -1,5 +1,6 @@
 package com.boyz.code.workouttimer
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -26,6 +27,12 @@ class OverviewActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerViewWorkout)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         recyclerView.adapter = WorkoutAdapter(workouts)
+
+        (recyclerView.adapter as WorkoutAdapter).setOnItemClickListener { _, position ->
+            startActivity(Intent(this, WorkoutActivity::class.java).apply {
+                putExtra("title", workouts[position].title)
+            })
+        }
 
         addWorkoutBtn.setOnClickListener {
             val addWorkoutDialogFragment = AddWorkoutDialogFragment()

@@ -98,14 +98,6 @@ fun Long?.toTimerInputFormat(): String {
 
 fun timeInputConverter(min: Int, sec: Int): Long = ((min * 60000) + (sec * 1000)).toLong()
 
-fun RecyclerView.disableScrolling() {
-    this.addOnItemTouchListener(RecyclerViewDisableListener())
-}
-
-fun RecyclerView.enableScrolling() {
-    this.removeOnItemTouchListener(RecyclerViewDisableListener())
-}
-
 object WorkoutManager {
 
     fun getWorkouts(context: Context): List<Workout> {
